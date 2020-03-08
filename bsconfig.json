@@ -1,8 +1,6 @@
 {
   "name": "rt",
-  "reason": {
-    "react-jsx": 3
-  },
+  "reason": {},
   "sources": {
     "dir": "src",
     "subdirs": true

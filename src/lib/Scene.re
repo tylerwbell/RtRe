@@ -1,0 +1,1 @@
+type t = {a: Vec3f.t};
