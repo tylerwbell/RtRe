@@ -12,7 +12,7 @@ type viewport = {
   height: int,
 };
 
-let viewport = {width: 600, height: 400};
+let viewport = {width: 600, height: 300};
 
 let canvas = Canvas.createElement(viewport.width, viewport.height);
 document##body##appendChild(canvas);

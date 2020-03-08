@@ -3,12 +3,12 @@ open Canvas.Context2d;
 open Vec3f;
 
 let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
-  let origin: Vec3f.t = {x: 0.0, y: 0.0, z: 0.0};
-  let dx: Vec3f.t = {x: 0.0, y: 0.0, z: 0.0};
-  let dy: Vec3f.t = {x: 0.0, y: 0.0, z: 0.0};
+  let origin: Vec3f.t = {x: (-1.0), y: (-0.5), z: (-0.3)};
+  let dx: Vec3f.t = {x: 2.0, y: 0.0, z: 0.0};
+  let dy: Vec3f.t = {x: 0.0, y: 1.0, z: 0.0};
 
   let width = 600;
-  let height = 400;
+  let height = 300;
 
   let texture: LinearGradient.record = {
     a: {
