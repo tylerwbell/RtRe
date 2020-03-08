@@ -14,7 +14,7 @@ let div = (v: t, scalar: float) => mult(v, 1.0 /. scalar);
 let add = (a: t, b: t) => {x: a.x +. b.x, y: a.y +. b.y, z: a.z +. b.z};
 let sub = (a: t, b: t) => {x: a.x -. b.x, y: a.y -. b.y, z: a.z -. b.z};
 
-let dot = (a: t, b: t) => a.x *. a.y +. a.y *. b.y +. a.z *. b.z;
+let dot = (a: t, b: t) => a.x *. a.x +. a.y *. b.y +. a.z *. b.z;
 let cross = (a: t, b: t) => {
   x: a.y *. b.z -. a.z *. b.y,
   y: (-1.0) *. (a.x *. b.z -. a.z *. b.x),

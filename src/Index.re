@@ -12,7 +12,7 @@ type viewport = {
   height: int,
 };
 
-let viewport = {width: 700, height: 500};
+let viewport = {width: 600, height: 400};
 
 let canvas = Canvas.createElement(viewport.width, viewport.height);
 document##body##appendChild(canvas);
@@ -40,16 +40,4 @@ let scene: Scene.t = {
   },
 };
 
-for (x in 0 to viewport.width) {
-  for (y in 0 to viewport.height) {
-    let ray = camera->rayThrough(float(x), float(y));
-    let color =
-      switch (Tracer.trace(scene, ray)) {
-      | Some(color) => color
-      | None => Texture.colorAt(float(x), float(y))
-      };
-
-    context->setFillStyle(Color.toDomRgbaString(color));
-    context->fillRect(float(x), float(y), 1.0, 1.0);
-  };
-};
+Renderer.render(camera, scene, context);
