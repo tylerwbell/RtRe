@@ -6,58 +6,37 @@ let style = document##createElement("style");
 document##head##appendChild(style);
 
 type viewport = {
-  x: int,
-  y: int,
+  width: int,
+  height: int,
 };
 
-let viewport = {x: 800, y: 500};
+let viewport = {width: 800, height: 500};
 
-let canvas = Canvas.createElement(viewport.x, viewport.y);
+let canvas = Canvas.createElement(viewport.width, viewport.height);
 document##body##appendChild(canvas);
 
 let context = Canvas.getContext2d(canvas);
 
-let clear = () => {
-  Canvas.Ctx.setFillStyle(context, "#000000");
-  Canvas.Ctx.fillRect(
-    context,
-    0.0,
-    0.0,
-    float(viewport.x),
-    float(viewport.y),
-  );
+let clearColor = Color.fromRgb(0.0, 0.0, 0.0);
+Canvas.Context2d.setFillStyle(context, Color.toRgbaString(clearColor));
+Canvas.Context2d.fillRect(
+  context,
+  0.0,
+  0.0,
+  float(viewport.width),
+  float(viewport.height),
+);
 
-  Canvas.Ctx.setFillStyle(context, "#aaaa00");
-  for (x in 0 to viewport.x) {
-    for (y in 0 to viewport.y) {
-      if (Random.int(100) == 0) {
-        Canvas.Ctx.fillRect(context, float(x), float(y), 1.0, 1.0);
-      };
-    };
+for (x in 0 to viewport.width) {
+  for (y in 0 to viewport.height) {
+    let color =
+      Color.fromRgb(
+        float(x) /. float(viewport.width),
+        float(y) /. float(viewport.height),
+        0.0,
+      );
+
+    Canvas.Context2d.setFillStyle(context, Color.toRgbaString(color));
+    Canvas.Context2d.fillRect(context, float(x), float(y), 1.0, 1.0);
   };
 };
-
-let x = ref(0);
-let vx = ref(10);
-
-let rec loop = (~t: float) => {
-  Js.log(t);
-  clear();
-
-  x := x^ + vx^;
-  vx :=
-    (
-      switch (x^) {
-      | x when x < 0 || x > viewport.x => (-1) * vx^
-      | _ => vx^
-      }
-    );
-
-  Canvas.Ctx.setFillStyle(context, "#FF0000");
-  Canvas.Ctx.fillRect(context, float(x^), 10.0, 10.0, 10.0);
-
-  let _ = Raf.requestAnimationFrame(t => loop(~t));
-  ();
-};
-
-loop(~t=0.0);

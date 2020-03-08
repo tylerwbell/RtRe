@@ -19,7 +19,7 @@ let createElement: (int, int) => canvas = [%bs.raw
 [@bs.send]
 external getContext2d: (canvas, [@bs.as "2d"] _) => context2d = "getContext";
 
-module Ctx = {
+module Context2d = {
   [@bs.get] external canvas: context2d => canvas = "canvas";
 
   [@bs.set] external setFillStyle: (context2d, string) => unit = "fillStyle";
