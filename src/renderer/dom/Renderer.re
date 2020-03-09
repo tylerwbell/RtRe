@@ -13,14 +13,14 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
   let texture: LinearGradient.record = {
     a: {
       x: 0.0,
-      y: 0.0,
+      y: 0.5,
     },
     b: {
-      x: 1.0,
+      x: 0.0,
       y: 1.0,
     },
-    aColor: Color.fromRgb(1.0, 0.0, 0.0),
-    bColor: Color.fromRgb(0.0, 1.0, 0.0),
+    aColor: Color.fromRgb(0.8, 0.8, 0.8),
+    bColor: Color.fromRgb(0.3, 1.0, 0.7),
   };
 
   for (x in 0 to width) {

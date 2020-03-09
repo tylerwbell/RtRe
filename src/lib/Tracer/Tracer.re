@@ -1,39 +1,21 @@
 open Vec3f;
-
-let hitSphere =
-    (center: Vec3f.t, radius: float, ray: Ray.t, color: Color.t)
-    : option(Color.t) => {
-  let oc = ray.origin->sub(center);
-  let a = ray.direction->dot(ray.direction);
-  let b = 2.0 *. oc->dot(ray.direction);
-  let c = oc->dot(oc) -. radius *. radius;
-  let discriminant = b *. b -. 4.0 *. a *. c;
-
-  switch (discriminant) {
-  | d when d > 0.0 => Some(color)
-  | _ => None
-  };
-};
+open Ray;
 
 let trace = (scene: Scene.t, ray: Ray.t): option(Color.t) => {
-  let a =
-    hitSphere(
-      {x: 0.0, y: 0.0, z: 1.0},
-      0.5,
-      ray,
-      Color.fromRgb(1.0, 0.0, 0.0),
-    );
+  let sphere: Sphere.t = {
+    center: {
+      x: 0.0,
+      y: 0.0,
+      z: (-1.0),
+    },
+    radius: 0.5,
+    color: Color.fromRgb(1.0, 0.0, 0.0),
+  };
 
-  let b =
-    hitSphere(
-      {x: 0.0, y: (-55.0), z: 35.0},
-      50.0,
-      ray,
-      Color.fromRgb(1.0, 1.0, 0.0),
-    );
-
-  switch (a) {
-  | Some(c) => Some(c)
-  | None => b
+  switch (Sphere.intersect(sphere, ray)) {
+  | Some(hit) =>
+    let vec = hit.normal->addScalar(1.0)->mult(0.5);
+    Some(Color.fromRgb(vec.x, vec.y, vec.z));
+  | None => None
   };
 };
