@@ -8,3 +8,10 @@ let toDomRgbaString = (t: t) => {
 
   {j|rgba($r', $g', $b')|j};
 };
+
+let red = fromRgb(1.0, 0.0, 0.0);
+let green = fromRgb(0.0, 1.0, 0.0);
+let blue = fromRgb(0.0, 0.0, 1.0);
+
+let white = fromRgb(1.0, 1.0, 1.0);
+let black = fromRgb(0.0, 0.0, 0.0);

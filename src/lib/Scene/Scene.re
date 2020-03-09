@@ -1,1 +1,1 @@
-type t = {a: Vec3f.t};
+type t = {bodies: list(Sphere.t)};

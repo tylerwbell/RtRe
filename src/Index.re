@@ -33,11 +33,26 @@ let camera: Camera.t = {
 };
 
 let scene: Scene.t = {
-  a: {
-    x: 0.0,
-    y: 0.0,
-    z: 0.0,
-  },
+  bodies: [
+    {
+      center: {
+        x: 0.0,
+        y: 0.0,
+        z: (-1.0),
+      },
+      radius: 0.5,
+      color: Color.fromRgb(1.0, 0.0, 0.0),
+    },
+    {
+      center: {
+        x: 0.0,
+        y: (-100.5),
+        z: (-1.0),
+      },
+      radius: 100.0,
+      color: Color.fromRgb(1.0, 0.0, 0.0),
+    },
+  ],
 };
 
 Renderer.render(camera, scene, context);

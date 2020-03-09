@@ -3,25 +3,27 @@ open Canvas.Context2d;
 open Vec3f;
 
 let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
-  let origin: Vec3f.t = {x: (-1.0), y: (-0.5), z: (-0.3)};
+  let origin: Vec3f.t = {x: (-1.0), y: 0.5, z: (-0.3)};
   let dx: Vec3f.t = {x: 2.0, y: 0.0, z: 0.0};
-  let dy: Vec3f.t = {x: 0.0, y: 1.0, z: 0.0};
+  let dy: Vec3f.t = {x: 0.0, y: (-1.0), z: 0.0};
 
   let width = 600;
   let height = 300;
 
-  let texture: LinearGradient.record = {
-    a: {
-      x: 0.0,
-      y: 0.5,
-    },
-    b: {
-      x: 0.0,
-      y: 1.0,
-    },
-    aColor: Color.fromRgb(0.8, 0.8, 0.8),
-    bColor: Color.fromRgb(0.3, 1.0, 0.7),
-  };
+  // let texture: LinearGradient.record = {
+  //   a: {
+  //     x: 0.0,
+  //     y: 0.5,
+  //   },
+  //   b: {
+  //     x: 0.0,
+  //     y: 1.0,
+  //   },
+  //   aColor: Color.fromRgb(0.8, 0.8, 0.8),
+  //   bColor: Color.fromRgb(0.3, 1.0, 0.7),
+  // };
+
+  let texture = Checkered.standard;
 
   for (x in 0 to width) {
     for (y in 0 to height) {
@@ -37,7 +39,7 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
         switch (Tracer.trace(scene, ray)) {
         | Some(color) => color
         | None =>
-          LinearGradient.Texture.colorAt(
+          Checkered.Texture.colorAt(
             texture,
             {x: float(x) /. float(width), y: float(y) /. float(height)},
           )
