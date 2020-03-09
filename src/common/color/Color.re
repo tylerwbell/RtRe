@@ -1,16 +1,10 @@
-type t = {
-  r: float,
-  g: float,
-  b: float,
-  a: float,
-};
+type t = Vec3f.t;
 
-let fromRgb = (r, g, b) => {r, g, b, a: 1.0};
-let fromRgba = (r, g, b, a) => {r, g, b, a};
-let toDomRgbaString = ({r, g, b, a}: t) => {
-  let r' = int_of_float(max(0.0, min(255.0, 255.0 *. r)));
-  let g' = int_of_float(max(0.0, min(255.0, 255.0 *. g)));
-  let b' = int_of_float(max(0.0, min(255.0, 255.0 *. b)));
+let fromRgb = (r, g, b): t => {x: r, y: g, z: b};
+let toDomRgbaString = (t: t) => {
+  let r' = int_of_float(max(0.0, min(255.0, 255.0 *. t.x)));
+  let g' = int_of_float(max(0.0, min(255.0, 255.0 *. t.y)));
+  let b' = int_of_float(max(0.0, min(255.0, 255.0 *. t.z)));
 
-  {j|rgba($r', $g', $b', $a)|j};
+  {j|rgba($r', $g', $b')|j};
 };
