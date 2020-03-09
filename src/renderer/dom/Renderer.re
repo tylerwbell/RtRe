@@ -16,11 +16,11 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
       y: 0.0,
     },
     b: {
-      x: 0.0,
+      x: 1.0,
       y: 1.0,
     },
-    aColor: Color.fromRgb(1.0, 1.0, 1.0),
-    bColor: Color.fromRgb(0.0, 0.8, 0.0),
+    aColor: Color.fromRgb(1.0, 0.0, 0.0),
+    bColor: Color.fromRgb(0.0, 1.0, 0.0),
   };
 
   for (x in 0 to width) {

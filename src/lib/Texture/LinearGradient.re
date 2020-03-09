@@ -14,14 +14,13 @@ module Texture: Texture.Texture with type t = record = {
     let direction = t.b->sub(t.a);
     let length = Vec2f.length(direction);
     let normalized = direction->div(length);
-    let r = normalized->dot(p) /. length;
+    let r = normalized->dot(p);
     let r' = 1.0 -. r;
 
-    {
-      r: r' *. t.aColor.r +. r *. t.bColor.r,
-      g: r' *. t.aColor.g +. r *. t.bColor.g,
-      b: r' *. t.aColor.b +. r *. t.bColor.b,
-      a: 1.0,
-    };
+    Color.fromRgb(
+      r' *. t.aColor.r +. r *. t.bColor.r,
+      r' *. t.aColor.g +. r *. t.bColor.g,
+      r' *. t.aColor.b +. r *. t.bColor.b,
+    );
   };
 };
