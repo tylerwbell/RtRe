@@ -3,6 +3,8 @@ type t = {
   y: float,
 };
 
+let zero = {x: 0.0, y: 0.0};
+
 let mult = (v: t, scalar: float) => {x: scalar *. v.x, y: scalar *. v.y};
 let div = (v: t, scalar: float) => mult(v, 1.0 /. scalar);
 

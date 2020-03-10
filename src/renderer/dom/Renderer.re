@@ -3,22 +3,16 @@ open Canvas.Context2d;
 open Vec3f;
 
 let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
-  let origin: Vec3f.t = {x: (-1.0), y: 0.5, z: (-0.3)};
-  let dx: Vec3f.t = {x: 2.0, y: 0.0, z: 0.0};
-  let dy: Vec3f.t = {x: 0.0, y: (-1.0), z: 0.0};
-
   let width = 600;
   let height = 300;
 
   for (x in 0 to width) {
     for (y in 0 to height) {
-      let ray: Ray.t = {
-        origin: camera.origin,
-        direction:
-          origin
-          ->add(dx->mult(float(x) /. float(width)))
-          ->add(dy->mult(float(y) /. float(height))),
-      };
+      let ray =
+        camera->rayThrough({
+          x: float(x) /. float(width),
+          y: float(y) /. float(height),
+        });
 
       let color =
         switch (Tracer.trace(scene, ray)) {
