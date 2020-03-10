@@ -11,5 +11,8 @@ let colorAt = (t, p: Vec2f.t): Color.t => {
   let normalized = Vec2f.div(direction, length);
   let r = Vec2f.dot(normalized, p);
 
-  Vec3f.add(Vec3f.mult(t.aColor, 1.0 -. r), Vec3f.mult(t.bColor, r));
+  Vec3f.add(
+    Vec3f.multScalar(t.aColor, 1.0 -. r),
+    Vec3f.multScalar(t.bColor, r),
+  );
 };

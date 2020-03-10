@@ -1,4 +1,4 @@
 type t = {
   background: Texture.t,
-  bodies: list(Sphere.t),
+  bodies: list(Shape.t),
 };

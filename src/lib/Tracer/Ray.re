@@ -6,4 +6,4 @@ type t = {
 };
 
 let pointAtParameter = (r: t, t: float) =>
-  r.origin->add(r.direction->mult(t));
+  r.origin->add(r.direction->multScalar(t));

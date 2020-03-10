@@ -1,7 +1,6 @@
 type t = {
-  t: float,
-  position: Vec3f.t,
-  normal: Vec3f.t,
+  geometry: HitGeometry.t,
+  body: Shape.t,
 };
 
-let nearest = (a: t, b: t) => a.t < b.t ? a : b;
+let nearest = (a: t, b: t) => a.geometry.t < b.geometry.t ? a : b;

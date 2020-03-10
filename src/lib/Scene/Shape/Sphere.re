@@ -4,7 +4,7 @@ open Ray;
 type t = {
   center: Vec3f.t,
   radius: float,
-  color: Color.t,
+  material: Material.t,
 };
 
 let hit =
@@ -15,10 +15,10 @@ let hit =
       ray: Ray.t,
       t: float,
     )
-    : option(Hit.t) =>
+    : option(HitGeometry.t) =>
   if (t > tMin && t < tMax) {
     let position = ray->pointAtParameter(t);
-    let normal = position->sub(record.center)->div(record.radius);
+    let normal = position->sub(record.center)->divScalar(record.radius);
     Some({t, position, normal});
   } else {
     None;
@@ -26,7 +26,7 @@ let hit =
 
 let intersect =
     (t: t, ~tMin: float=0.0, ~tMax: float=max_float, ray: Ray.t)
-    : option(Hit.t) => {
+    : option(HitGeometry.t) => {
   let oc = Vec3f.sub(ray.origin, t.center);
   let a = Vec3f.dot(ray.direction, ray.direction);
   let b = oc->dot(ray.direction);

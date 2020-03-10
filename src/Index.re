@@ -47,39 +47,59 @@ let camera: Camera.t = {
   },
 };
 
+let sky: Texture.t =
+  LinearGradient({
+    a: {
+      x: 0.0,
+      y: 0.0,
+    },
+    b: {
+      x: 0.0,
+      y: 1.0,
+    },
+    aColor: Color.fromRgb(0.3, 0.8, 0.1),
+    bColor: Color.fromRgb(0.8, 0.6, 0.6),
+  });
+
 let scene: Scene.t = {
-  background:
-    LinearGradient({
-      a: {
-        x: 0.0,
-        y: 0.0,
-      },
-      b: {
-        x: 0.0,
-        y: 1.0,
-      },
-      aColor: Color.blue,
-      bColor: Color.white,
-    }),
+  background: sky, // CheckerTexture(CheckerTexture.standard),
   bodies: [
-    {
+    Sphere({
+      center: {
+        x: (-1.0),
+        y: 0.0,
+        z: (-1.0),
+      },
+      radius: 0.5,
+      material: Lambertian({albedo: Color.fromRgb(0.8, 0.3, 0.3)}),
+    }),
+    Sphere({
       center: {
         x: 0.0,
         y: 0.0,
         z: (-1.0),
       },
       radius: 0.5,
-      color: Color.fromRgb(1.0, 0.0, 0.0),
-    },
-    {
+      material: Lambertian({albedo: Color.blue}),
+    }),
+    Sphere({
+      center: {
+        x: 1.0,
+        y: 0.0,
+        z: (-1.0),
+      },
+      radius: 0.5,
+      material: Metal({albedo: Color.fromRgb(0.8, 0.6, 0.2)}),
+    }),
+    Sphere({
       center: {
         x: 0.0,
         y: (-100.5),
         z: (-1.0),
       },
       radius: 100.0,
-      color: Color.fromRgb(1.0, 0.0, 0.0),
-    },
+      material: Lambertian({albedo: Color.fromRgb(0.8, 0.8, 0.0)}),
+    }),
   ],
 };
 
