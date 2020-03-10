@@ -1,1 +1,4 @@
-type t = {bodies: list(Sphere.t)};
+type t = {
+  background: Texture.t,
+  bodies: list(Sphere.t),
+};

@@ -33,6 +33,7 @@ let camera: Camera.t = {
 };
 
 let scene: Scene.t = {
+  background: CheckerTexture(CheckerTexture.standard),
   bodies: [
     {
       center: {

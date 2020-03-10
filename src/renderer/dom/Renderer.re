@@ -10,21 +10,6 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
   let width = 600;
   let height = 300;
 
-  // let texture: LinearGradient.record = {
-  //   a: {
-  //     x: 0.0,
-  //     y: 0.5,
-  //   },
-  //   b: {
-  //     x: 0.0,
-  //     y: 1.0,
-  //   },
-  //   aColor: Color.fromRgb(0.8, 0.8, 0.8),
-  //   bColor: Color.fromRgb(0.3, 1.0, 0.7),
-  // };
-
-  let texture = Checkered.standard;
-
   for (x in 0 to width) {
     for (y in 0 to height) {
       let ray: Ray.t = {
@@ -39,8 +24,8 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
         switch (Tracer.trace(scene, ray)) {
         | Some(color) => color
         | None =>
-          Checkered.Texture.colorAt(
-            texture,
+          Texture.colorAt(
+            scene.background,
             {x: float(x) /. float(width), y: float(y) /. float(height)},
           )
         };
