@@ -48,7 +48,19 @@ let camera: Camera.t = {
 };
 
 let scene: Scene.t = {
-  background: CheckerTexture(CheckerTexture.standard),
+  background:
+    LinearGradient({
+      a: {
+        x: 0.0,
+        y: 0.0,
+      },
+      b: {
+        x: 0.0,
+        y: 1.0,
+      },
+      aColor: Color.blue,
+      bColor: Color.white,
+    }),
   bodies: [
     {
       center: {

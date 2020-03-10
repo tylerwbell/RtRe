@@ -14,16 +14,7 @@ let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
           y: float(y) /. float(height),
         });
 
-      let color =
-        switch (Tracer.trace(scene, ray)) {
-        | Some(color) => color
-        | None =>
-          Texture.colorAt(
-            scene.background,
-            {x: float(x) /. float(width), y: float(y) /. float(height)},
-          )
-        };
-
+      let color = Tracer.trace(scene, ray);
       context->setFillStyle(Color.toDomRgbaString(color));
       context->fillRect(float(x), float(y), 1.0, 1.0);
     };

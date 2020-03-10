@@ -29,5 +29,6 @@ let cross = (a: t, b: t) => {
   z: a.x *. b.y -. a.y *. b.x,
 };
 
-let length = (v: t) => sqrt(v.x *. v.x +. v.y *. v.y +. v.z *. v.z);
+let lengthSquared = (v: t) => v.x *. v.x +. v.y *. v.y +. v.z *. v.z;
+let length = (v: t) => sqrt(lengthSquared(v));
 let normalized = (v: t) => div(v, length(v));
