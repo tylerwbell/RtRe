@@ -2,37 +2,39 @@ open Camera;
 open Canvas.Context2d;
 open Vec3f;
 
-let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
-  let width = 600;
-  let height = 300;
-  let aa = 50;
-  let epsilon = 1.0;
-  let traceDepth = 50;
+type t = {
+  width: int,
+  height: int,
+  samples: int,
+  blur: float,
+  depth: int,
+};
 
-  for (x in 0 to width) {
-    for (y in 0 to height) {
-      let aaColor: ref(Color.t) = ref(Vec3f.zero);
-      for (_ in 0 to aa) {
-        let ux = float(x) +. Random.float(epsilon) -. epsilon /. 2.0;
-        let uy = float(y) +. Random.float(epsilon) -. epsilon /. 2.0;
+let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
+  Canvas.setWidth(canvas, t.width);
+  Canvas.setHeight(canvas, t.height);
+  let context = Canvas.getContext2d(canvas);
+
+  for (x in 0 to t.width) {
+    for (y in 0 to t.height) {
+      let color: ref(Color.t) = ref(Vec3f.zero);
+      // TODO:
+      for (_ in 0 to t.samples) {
+        let ux = float(x) +. Random.float(t.blur) -. t.blur /. 2.0;
+        let uy = float(y) +. Random.float(t.blur) -. t.blur /. 2.0;
 
         let ray =
           camera->rayThrough({
-            x: ux /. float(width),
-            y: uy /. float(height),
+            x: ux /. float(t.width),
+            y: uy /. float(t.height),
           });
 
-        let color = Tracer.trace(scene, ray, traceDepth);
-        aaColor := (aaColor^)->add(color);
+        color := Tracer.trace(scene, ray, t.depth)->add(color^);
       };
 
-      aaColor := (aaColor^)->divScalar(float(aa));
-      let colorGamma2: Color.t = {
-        x: sqrt(aaColor^.x),
-        y: sqrt(aaColor^.y),
-        z: sqrt(aaColor^.z),
-      };
-      context->setFillStyle(Color.toDomRgbaString(colorGamma2));
+      color := (color^)->divScalar(float(t.samples));
+      color := Filter.apply(GammaFilter, color^);
+      context->setFillStyle(Color.toDomRgbaString(color^));
       context->fillRect(float(x), float(y), 1.0, 1.0);
     };
   };

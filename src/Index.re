@@ -7,36 +7,22 @@ open Camera;
 let style = document##createElement("style");
 document##head##appendChild(style);
 
-type viewport = {
-  width: int,
-  height: int,
-};
-
-let viewport = {width: 600, height: 300};
-
-let canvas = Canvas.createElement(viewport.width, viewport.height);
+let canvas = Canvas.create();
 document##body##appendChild(canvas);
-
-let context = Canvas.getContext2d(canvas);
-context->setFillStyle("");
-
-let clearColor = Color.fromRgb(0.0, 0.0, 0.0);
-context->setFillStyle(Color.toDomRgbaString(clearColor));
-context->fillRect(0.0, 0.0, float(viewport.width), float(viewport.height));
 
 let camera: Camera.t = {
   origin: {
     x: 0.0,
     y: 0.0,
-    z: 0.0,
+    z: 1.0,
   },
   basis: {
-    x: (-1.0),
+    x: (-0.5),
     y: 0.5,
     z: (-0.3),
   },
   dx: {
-    x: 2.0,
+    x: 1.0,
     y: 0.0,
     z: 0.0,
   },
@@ -62,7 +48,7 @@ let sky: Texture.t =
   });
 
 let scene: Scene.t = {
-  background: sky, // CheckerTexture(CheckerTexture.standard),
+  background: sky,
   bodies: [
     Sphere({
       center: {
@@ -103,4 +89,9 @@ let scene: Scene.t = {
   ],
 };
 
-Renderer.render(camera, scene, context);
+Renderer.render(
+  {width: 600, height: 600, samples: 10, blur: 1.0, depth: 10},
+  camera,
+  scene,
+  canvas,
+);

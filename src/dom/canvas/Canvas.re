@@ -1,20 +1,17 @@
 type t;
 type context2d;
 
-let getElementById: string => t = [%bs.raw
-  {|function(arg) {
-  return document.getElementById(arg)
- }|}
-];
-
-let createElement: (int, int) => t = [%bs.raw
-  {|function(width, height) {
+let create: unit => t = [%bs.raw
+  {|function() {
   var node = document.createElement('canvas')
-  node.width = width
-  node.height = height
   return node
 }|}
 ];
+
+[@bs.get] external width: t => int = "width";
+[@bs.set] external setWidth: (t, int) => unit = "width";
+[@bs.get] external height: t => int = "height";
+[@bs.set] external setHeight: (t, int) => unit = "height";
 
 [@bs.send]
 external getContext2d: (t, [@bs.as "2d"] _) => context2d = "getContext";
