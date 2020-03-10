@@ -28,12 +28,12 @@ let rec _randomInUnitSphere = (): Vec3f.t => {
 let rec trace = (scene: Scene.t, ray: Ray.t): Color.t => {
   switch (_trace(scene.bodies, ray)) {
   | Some(hit) =>
-    let bounce =
-      hit.position
-      ->add(hit.normal)
-      ->add(_randomInUnitSphere())
-      ->sub(hit.position);
-    trace(scene, {origin: hit.position, direction: bounce})->mult(0.5);
+    let bounce = hit.position->add(hit.normal)->add(_randomInUnitSphere());
+    trace(
+      scene,
+      {origin: hit.position, direction: bounce->sub(hit.position)},
+    )
+    ->mult(0.5);
   | None =>
     let unit = Vec3f.normalized(ray.direction);
     Texture.colorAt(scene.background, {x: unit.x, y: unit.y});

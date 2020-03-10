@@ -10,7 +10,7 @@ type t = {
 let hit =
     (
       record: t,
-      ~tMin: float=0.0,
+      ~tMin: float=0.0001,
       ~tMax: float=max_float,
       ray: Ray.t,
       t: float,

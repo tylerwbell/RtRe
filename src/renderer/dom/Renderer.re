@@ -5,17 +5,33 @@ open Vec3f;
 let render = (camera: Camera.t, scene: Scene.t, context: Canvas.context2d) => {
   let width = 600;
   let height = 300;
+  let aa = 4;
+  let epsilon = 1.0;
 
   for (x in 0 to width) {
     for (y in 0 to height) {
-      let ray =
-        camera->rayThrough({
-          x: float(x) /. float(width),
-          y: float(y) /. float(height),
-        });
+      let aaColor: ref(Color.t) = ref(Vec3f.zero);
+      for (_ in 0 to aa) {
+        let ux = float(x) +. Random.float(epsilon) -. epsilon /. 2.0;
+        let uy = float(y) +. Random.float(epsilon) -. epsilon /. 2.0;
 
-      let color = Tracer.trace(scene, ray);
-      context->setFillStyle(Color.toDomRgbaString(color));
+        let ray =
+          camera->rayThrough({
+            x: ux /. float(width),
+            y: uy /. float(height),
+          });
+
+        let color = Tracer.trace(scene, ray);
+        aaColor := (aaColor^)->add(color);
+      };
+
+      aaColor := (aaColor^)->div(float(aa));
+      let colorGamma2: Color.t = {
+        x: sqrt(aaColor^.x),
+        y: sqrt(aaColor^.y),
+        z: sqrt(aaColor^.z),
+      };
+      context->setFillStyle(Color.toDomRgbaString(colorGamma2));
       context->fillRect(float(x), float(y), 1.0, 1.0);
     };
   };
