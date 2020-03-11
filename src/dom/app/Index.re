@@ -46,7 +46,7 @@ let sky: Texture.t =
   });
 
 let scene: Scene.t = {
-  background: CheckerTexture(CheckerTexture.standard),
+  background: sky, // CheckerTexture(CheckerTexture.standard),
   bodies: [
     Sphere({
       center: {
