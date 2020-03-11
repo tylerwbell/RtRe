@@ -13,7 +13,6 @@ let rec _randomInUnitSphere = (): Vec3f.t => {
   Vec3f.lengthSquared(p) >= 1.0 ? _randomInUnitSphere() : p;
 };
 
-// TODO: rename to diffuse
 // TODO: scatter with probability
 let scatter = (t: t, ray: Ray.t, hit: HitGeometry.t): ScatteredRay.t => {
   let target = hit.position->add(hit.normal)->add(_randomInUnitSphere());

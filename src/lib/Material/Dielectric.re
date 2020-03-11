@@ -2,10 +2,10 @@ open Vec3f;
 
 // TODO: schlick reflectivity
 
-type t = {refractiveIndex: float};
-
-// TODO: configurable attenuation
-let attenuation: Vec3f.t = {x: 0.2, y: 1.0, z: 1.0};
+type t = {
+  attenuation: Vec3f.t,
+  refractiveIndex: float,
+};
 
 let refract = (v: Vec3f.t, n: Vec3f.t, niOverNt: float): option(Vec3f.t) => {
   let uv = Vec3f.normalized(v);
@@ -45,13 +45,14 @@ let scatter = (t: t, ray: Ray.t, hit: HitGeometry.t): option(ScatteredRay.t) => 
   switch (refracted) {
   | Some(v) =>
     let ray: Ray.t = {origin: hit.position, direction: v};
-    let scattered: ScatteredRay.t = {ray, attenuation};
+    let scattered: ScatteredRay.t = {ray, attenuation: t.attenuation};
     Some(scattered);
   | None =>
+    // TODO: util class, vector?
     let reflected =
-      Metal.reflect(Vec3f.normalized(ray.direction), hit.normal);
+      Specular.reflect(Vec3f.normalized(ray.direction), hit.normal);
     let ray: Ray.t = {origin: hit.position, direction: reflected};
-    let scattered: ScatteredRay.t = {ray, attenuation};
+    let scattered: ScatteredRay.t = {ray, attenuation: t.attenuation};
     Some(scattered);
   };
 };

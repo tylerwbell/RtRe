@@ -55,7 +55,7 @@ let scene: Scene.t = {
         z: (-1.0),
       },
       radius: 0.5,
-      material: Lambertian({albedo: Color.fromRgb(0.8, 0.4, 0.4)}),
+      material: Diffuse({albedo: Color.fromRgb(0.8, 0.4, 0.4)}),
     }),
     Sphere({
       center: {
@@ -64,7 +64,7 @@ let scene: Scene.t = {
         z: (-0.3),
       },
       radius: 0.4,
-      material: Dielectric({refractiveIndex: 1.5}),
+      material: Dielectric({refractiveIndex: 1.5, attenuation: Color.white}),
     }),
     Sphere({
       center: {
@@ -73,7 +73,7 @@ let scene: Scene.t = {
         z: (-1.0),
       },
       radius: 0.5,
-      material: Metal({albedo: Color.fromRgb(0.8, 0.6, 0.2)}),
+      material: Specular({albedo: Color.fromRgb(0.8, 0.6, 0.2)}),
     }),
     Sphere({
       center: {
@@ -82,14 +82,14 @@ let scene: Scene.t = {
         z: (-1.0),
       },
       radius: 100.0,
-      material: Metal({albedo: Color.fromRgb(0.8, 0.8, 0.6)}),
+      material: Specular({albedo: Color.fromRgb(0.8, 0.8, 0.6)}),
     }),
   ],
 };
 
 let render = (): unit => {
   Renderer.render(
-    {width: 200, height: 200, dpr: 3.0, samples: 3, blur: 1.0, depth: 20},
+    {width: 50, height: 50, dpr: 12.0, samples: 10, blur: 0.0, depth: 10},
     camera,
     scene,
     canvas,
