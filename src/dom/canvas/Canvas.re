@@ -22,6 +22,10 @@ module Context2d = {
   [@bs.set] external setFillStyle: (context2d, string) => unit = "fillStyle";
 
   [@bs.send]
-  external fillRect: (context2d, float, float, float, float) => unit =
-    "fillRect";
+  external fillRect: (context2d, int, int, int, int) => unit = "fillRect";
+
+  let drawPoint = (context: context2d, color: Color.t, x: int, y: int) => {
+    context->setFillStyle(Color.toDomRgbaString(color));
+    context->fillRect(x, y, 1, 1);
+  };
 };

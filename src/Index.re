@@ -90,7 +90,7 @@ let scene: Scene.t = {
 };
 
 Renderer.render(
-  {width: 600, height: 600, samples: 10, blur: 1.0, depth: 10},
+  {width: 300, height: 300, samples: 10, blur: 1.0, depth: 3},
   camera,
   scene,
   canvas,

@@ -10,32 +10,54 @@ type t = {
   depth: int,
 };
 
+type rendering = {
+  width: int,
+  height: int,
+  buffer: array(Color.t),
+};
+
+let render = (t: t, camera: Camera.t, scene: Scene.t): rendering => {
+  let buffer = Array.make(t.width * t.height, Color.black);
+  for (x in 0 to t.width - 1) {
+    for (y in 0 to t.height - 1) {
+      let ux = float(x) +. Random.float(t.blur) -. t.blur /. 2.0;
+      let uy = float(y) +. Random.float(t.blur) -. t.blur /. 2.0;
+
+      let ray =
+        camera->rayThrough({
+          x: ux /. float(t.width),
+          y: uy /. float(t.height),
+        });
+
+      buffer[y * t.width + x] = Tracer.trace(scene, ray, t.depth);
+    };
+  };
+
+  {width: t.width, height: t.height, buffer};
+};
+
+let draw = (context: Canvas.context2d, r: rendering) => {
+  for (x in 0 to r.width - 1) {
+    for (y in 0 to r.height - 1) {
+      let color = r.buffer[y * r.width + x];
+      let correctedColor = Filter.apply(GammaFilter, color);
+      context->drawPoint(correctedColor, x, y);
+    };
+  };
+};
+
 let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
   Canvas.setWidth(canvas, t.width);
   Canvas.setHeight(canvas, t.height);
   let context = Canvas.getContext2d(canvas);
 
-  for (x in 0 to t.width) {
-    for (y in 0 to t.height) {
-      let color: ref(Color.t) = ref(Vec3f.zero);
-      // TODO:
-      for (_ in 0 to t.samples) {
-        let ux = float(x) +. Random.float(t.blur) -. t.blur /. 2.0;
-        let uy = float(y) +. Random.float(t.blur) -. t.blur /. 2.0;
+  let rec loop = () => {
+    let rendering = render(t, camera, scene);
+    context->draw(rendering);
 
-        let ray =
-          camera->rayThrough({
-            x: ux /. float(t.width),
-            y: uy /. float(t.height),
-          });
-
-        color := Tracer.trace(scene, ray, t.depth)->add(color^);
-      };
-
-      color := (color^)->divScalar(float(t.samples));
-      color := Filter.apply(GammaFilter, color^);
-      context->setFillStyle(Color.toDomRgbaString(color^));
-      context->fillRect(float(x), float(y), 1.0, 1.0);
-    };
+    let _ = Raf.requestAnimationFrame(_ => {loop()});
+    ();
   };
+
+  loop();
 };
