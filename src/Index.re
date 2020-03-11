@@ -10,12 +10,10 @@ document##head##appendChild(style);
 let canvas = Canvas.create();
 document##body##appendChild(canvas);
 
+let origin: Vec3f.t = {x: 0.0, y: 0.0, z: 0.5};
+
 let camera: Camera.t = {
-  origin: {
-    x: 0.0,
-    y: 0.0,
-    z: 0.5,
-  },
+  origin: ref(origin),
   basis: {
     x: (-0.5),
     y: 0.5,
@@ -48,7 +46,7 @@ let sky: Texture.t =
   });
 
 let scene: Scene.t = {
-  background: sky,
+  background: CheckerTexture(CheckerTexture.standard),
   bodies: [
     Sphere({
       center: {
@@ -89,9 +87,35 @@ let scene: Scene.t = {
   ],
 };
 
-Renderer.render(
-  {width: 200, height: 200, dpr: 3.0, samples: 40, blur: 1.0, depth: 20},
-  camera,
-  scene,
-  canvas,
-);
+let render = (): unit => {
+  Renderer.render(
+    {width: 200, height: 200, dpr: 3.0, samples: 3, blur: 1.0, depth: 20},
+    camera,
+    scene,
+    canvas,
+  );
+};
+
+let d = 0.1;
+Dom.addKeyDownEventListener(keycode => {
+  switch (keycode) {
+  | 87 =>
+    // w
+    camera.origin := Vec3f.add(camera.origin^, {x: 0.0, y: d, z: 0.0})
+  | 65 =>
+    // a
+    camera.origin :=
+      Vec3f.add(camera.origin^, {x: (-1.0) *. d, y: 0.0, z: 0.0})
+  | 83 =>
+    // s
+    camera.origin :=
+      Vec3f.add(camera.origin^, {x: 0.0, y: (-1.0) *. d, z: 0.0})
+  | 68 =>
+    // d
+    camera.origin := Vec3f.add(camera.origin^, {x: d, y: 0.0, z: 0.0})
+  };
+
+  render();
+});
+
+render();

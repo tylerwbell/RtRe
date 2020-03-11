@@ -4,7 +4,8 @@ open Vec3f;
 
 type t = {refractiveIndex: float};
 
-let attenuation: Vec3f.t = {x: 1.0, y: 1.0, z: 1.0};
+// TODO: configurable attenuation
+let attenuation: Vec3f.t = {x: 0.2, y: 1.0, z: 1.0};
 
 let refract = (v: Vec3f.t, n: Vec3f.t, niOverNt: float): option(Vec3f.t) => {
   let uv = Vec3f.normalized(v);
