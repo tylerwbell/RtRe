@@ -48,7 +48,7 @@ let sky: Texture.t =
   });
 
 let scene: Scene.t = {
-  background: sky,
+  background: CheckerTexture(CheckerTexture.standard),
   bodies: [
     Sphere({
       center: {
@@ -84,13 +84,13 @@ let scene: Scene.t = {
         z: (-1.0),
       },
       radius: 100.0,
-      material: Lambertian({albedo: Color.fromRgb(0.8, 0.8, 0.0)}),
+      material: Metal({albedo: Color.fromRgb(0.8, 0.8, 0.0)}),
     }),
   ],
 };
 
 Renderer.render(
-  {width: 300, height: 300, samples: 10, blur: 1.0, depth: 3},
+  {width: 600, height: 600, samples: 10, blur: 2.0, depth: 10},
   camera,
   scene,
   canvas,
