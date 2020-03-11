@@ -61,9 +61,9 @@ let scene: Scene.t = {
     }),
     Sphere({
       center: {
-        x: (-0.5),
-        y: 0.0,
-        z: (-0.4),
+        x: (-0.0),
+        y: 0.1,
+        z: (-0.3),
       },
       radius: 0.4,
       material: Dielectric({refractiveIndex: 1.5}),
@@ -90,7 +90,7 @@ let scene: Scene.t = {
 };
 
 Renderer.render(
-  {width: 600, height: 600, dpr: 1.0, samples: 40, blur: 1.0, depth: 10},
+  {width: 200, height: 200, dpr: 3.0, samples: 40, blur: 1.0, depth: 20},
   camera,
   scene,
   canvas,

@@ -1,5 +1,7 @@
 open Vec3f;
 
+// TODO: schlick reflectivity
+
 type t = {refractiveIndex: float};
 
 let attenuation: Vec3f.t = {x: 1.0, y: 1.0, z: 1.0};
