@@ -5,6 +5,7 @@ open Vec3f;
 type t = {
   width: int,
   height: int,
+  dpr: float,
   samples: int,
   blur: float,
   depth: int,
@@ -53,9 +54,10 @@ let draw =
 };
 
 let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
-  Canvas.setWidth(canvas, t.width);
-  Canvas.setHeight(canvas, t.height);
+  Canvas.setWidth(canvas, float(t.width) *. t.dpr);
+  Canvas.setHeight(canvas, float(t.height) *. t.dpr);
   let context = Canvas.getContext2d(canvas);
+  context->setScale(t.dpr, t.dpr);
 
   let sample = ref(1);
   let buffer = Array.make(t.width * t.height, Color.black);
@@ -75,7 +77,7 @@ let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
 
     context->draw(t.width, t.height, buffer);
 
-    if (sample^ < t.depth) {
+    if (sample^ < t.samples) {
       sample := sample^ + 1;
       let _ = Raf.requestAnimationFrame(_ => {loop()});
       ();

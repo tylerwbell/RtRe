@@ -8,10 +8,10 @@ let create: unit => t = [%bs.raw
 }|}
 ];
 
-[@bs.get] external width: t => int = "width";
-[@bs.set] external setWidth: (t, int) => unit = "width";
-[@bs.get] external height: t => int = "height";
-[@bs.set] external setHeight: (t, int) => unit = "height";
+[@bs.get] external width: t => float = "width";
+[@bs.set] external setWidth: (t, float) => unit = "width";
+[@bs.get] external height: t => float = "height";
+[@bs.set] external setHeight: (t, float) => unit = "height";
 
 [@bs.send]
 external getContext2d: (t, [@bs.as "2d"] _) => context2d = "getContext";
@@ -20,6 +20,8 @@ module Context2d = {
   [@bs.get] external canvas: context2d => t = "canvas";
 
   [@bs.set] external setFillStyle: (context2d, string) => unit = "fillStyle";
+
+  [@bs.send] external setScale: (context2d, float, float) => unit = "scale";
 
   [@bs.send]
   external fillRect: (context2d, int, int, int, int) => unit = "fillRect";
