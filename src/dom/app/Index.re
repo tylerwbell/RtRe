@@ -64,7 +64,11 @@ let scene: Scene.t = {
         z: (-0.3),
       },
       radius: 0.4,
-      material: Dielectric({refractiveIndex: 1.5, attenuation: Color.white}),
+      material:
+        Dielectric({
+          refractiveIndex: 1.5,
+          attenuation: Color.fromRgb(0.9, 1.0, 1.0),
+        }),
     }),
     Sphere({
       center: {
@@ -89,14 +93,15 @@ let scene: Scene.t = {
 
 let render = (): unit => {
   Renderer.render(
-    {width: 50, height: 50, dpr: 12.0, samples: 10, blur: 0.0, depth: 10},
+    {width: 300, height: 300, dpr: 3.0, samples: 40, blur: 1.0, depth: 20},
     camera,
     scene,
     canvas,
   );
 };
 
-let d = 0.1;
+// TODO: keyboard controller
+let d = 0.01;
 Dom.addKeyDownEventListener(keycode => {
   switch (keycode) {
   | 87 =>

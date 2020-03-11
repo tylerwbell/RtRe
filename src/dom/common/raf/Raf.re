@@ -1,8 +1,8 @@
-type rafId;
+type animationId;
 
 [@bs.val]
-external requestAnimationFrame: (float => unit) => rafId =
+external requestAnimationFrame: (float => unit) => animationId =
   "requestAnimationFrame";
 
 [@bs.val]
-external cancelAnimationFrame: rafId => unit = "cancelAnimationFrame";
+external cancelAnimationFrame: animationId => unit = "cancelAnimationFrame";

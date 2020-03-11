@@ -2,22 +2,14 @@ open Camera;
 open Canvas.Context2d;
 open Vec3f;
 
-type t = {
-  width: int,
-  height: int,
-  dpr: float,
-  samples: int,
-  blur: float,
-  depth: int,
-};
-
 type rendering = {
   width: int,
   height: int,
   buffer: array(Color.t),
 };
 
-let render = (t: t, camera: Camera.t, scene: Scene.t): rendering => {
+let render =
+    (t: RenderSettings.t, camera: Camera.t, scene: Scene.t): rendering => {
   let buffer = Array.make(t.width * t.height, Color.black);
   for (x in 0 to t.width - 1) {
     for (y in 0 to t.height - 1) {
@@ -53,7 +45,10 @@ let draw =
   };
 };
 
-let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
+let scheduler = RenderScheduler.make();
+
+let render =
+    (t: RenderSettings.t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
   Canvas.setWidth(canvas, float(t.width) *. t.dpr);
   Canvas.setHeight(canvas, float(t.height) *. t.dpr);
   let context = Canvas.getContext2d(canvas);
@@ -61,10 +56,9 @@ let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
 
   let sample = ref(1);
   let buffer = Array.make(t.width * t.height, Color.black);
+
   let rec loop = () => {
     let sample' = sample^;
-    Js.log({j|pass $sample'|j});
-
     let rendering = render(t, camera, scene);
 
     for (i in 0 to Array.length(buffer) - 1) {
@@ -79,10 +73,11 @@ let render = (t: t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
 
     if (sample^ < t.samples) {
       sample := sample^ + 1;
-      let _ = Raf.requestAnimationFrame(_ => {loop()});
-      ();
+      let id = RenderScheduler.enqueue(scheduler, loop);
+      RenderScheduler.cancelBefore(scheduler, id);
     };
   };
 
-  loop();
+  let id = RenderScheduler.enqueue(scheduler, loop);
+  RenderScheduler.cancelBefore(scheduler, id);
 };
