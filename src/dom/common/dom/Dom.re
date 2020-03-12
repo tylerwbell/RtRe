@@ -16,11 +16,31 @@ let addKeyDownEventListener: (int => unit) => unit = [%bs.raw
 |}
 ];
 
+let addMouseDownEventListener: (unit => unit) => unit = [%bs.raw
+  {|
+    function(callback) {
+        document.addEventListener("mousedown", e => {
+          callback();
+        })
+    }
+|}
+];
+
+let addMouseUpEventListener: (unit => unit) => unit = [%bs.raw
+  {|
+    function(callback) {
+        document.addEventListener("mouseup", e => {
+          callback();
+        })
+    }
+|}
+];
+
 let addMouseMoveEventListener: ((int, int) => unit) => unit = [%bs.raw
   {|
     function(callback) {
         document.addEventListener("mousemove", e => {
-            callback(e.clientY, e.clientX);
+            callback(e.clientX, e.clientY);
         })
     }
 |}

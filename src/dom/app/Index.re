@@ -10,23 +10,21 @@ document##head##appendChild(style);
 let canvas = Canvas.create();
 document##body##appendChild(canvas);
 
-let origin: Vec3f.t = {x: 0.0, y: 0.0, z: 0.5};
-let basis: Vec3f.t = {x: (-0.5), y: 0.5, z: (-0.3)};
-
-let camera: Camera.t = {
-  origin: ref(origin),
-  basis: ref(basis),
-  dx: {
-    x: 1.0,
-    y: 0.0,
-    z: 0.0,
-  },
-  dy: {
-    x: 0.0,
-    y: (-1.0),
-    z: 0.0,
-  },
-};
+let camera: ref(Camera.t) =
+  ref({
+    position: {
+      x: 0.0,
+      y: 0.0,
+      z: 5.0,
+    },
+    direction: {
+      x: 0.0,
+      y: 0.0,
+      z: (-1.0),
+    },
+    fov: 40.0,
+    aspect: 2.0,
+  });
 
 let sky: Texture.t =
   LinearGradient({
@@ -60,7 +58,7 @@ let scene: Scene.t = {
         y: 0.1,
         z: (-0.3),
       },
-      radius: 0.4,
+      radius: 0.2,
       material:
         Dielectric({
           refractiveIndex: 1.5,
@@ -83,7 +81,7 @@ let scene: Scene.t = {
         z: (-1.0),
       },
       radius: 100.0,
-      material: Specular({albedo: Color.fromRgb(0.8, 0.8, 0.6)}),
+      material: Diffuse({albedo: Color.fromRgb(0.5, 0.9, 0.2)}),
     }),
   ],
 };
@@ -91,30 +89,28 @@ let scene: Scene.t = {
 let render = (): unit => {
   Renderer.render(
     {width: 500, height: 500, dpr: 2.0, samples: 40, blur: 0.0, depth: 20},
-    camera,
+    camera^,
     scene,
     canvas,
   );
 };
 
 // TODO: keyboard controller
-let d = 0.01;
+let d = 5.0;
 Dom.addKeyDownEventListener(keycode => {
   switch (keycode) {
   | 87 =>
     // w
-    camera.origin := Vec3f.add(camera.origin^, {x: 0.0, y: d, z: 0.0})
+    camera := Camera.moveAlongDirection(camera^, d)
   | 65 =>
     // a
-    camera.origin :=
-      Vec3f.add(camera.origin^, {x: (-1.0) *. d, y: 0.0, z: 0.0})
+    camera := Camera.move(camera^, {x: (-1.0) *. d, y: 0.0, z: 0.0})
   | 83 =>
     // s
-    camera.origin :=
-      Vec3f.add(camera.origin^, {x: 0.0, y: (-1.0) *. d, z: 0.0})
+    camera := Camera.moveAlongDirection(camera^, (-1.0) *. d)
   | 68 =>
     // d
-    camera.origin := Vec3f.add(camera.origin^, {x: d, y: 0.0, z: 0.0})
+    camera := Camera.move(camera^, {x: d, y: 0.0, z: 0.0})
   };
 
   render();
@@ -122,28 +118,32 @@ Dom.addKeyDownEventListener(keycode => {
 
 let prevX = ref(-1);
 let prevY = ref(-1);
+let mousedown = ref(false);
 
-// Dom.addMouseMoveEventListener((x, y) => {
-//   let dx = prevX^ - x;
-//   let dy = prevY^ - y;
-//   prevX := x;
-//   prevY := y;
+Dom.addMouseDownEventListener(() => {
+  Js.log("down");
+  mousedown := true;
+});
 
-//   Js.log({j|$dx, $dy|j});
+Dom.addMouseUpEventListener(() => {
+  Js.log("up");
+  mousedown := false;
+});
 
-//   camera.basis :=
-//     Vec3f.add(
-//       Vec3f.add(
-//         camera.basis^,
-//         Vec3f.multScalar({x: 0.000001, y: 0.000, z: 0.0}, float(dx)),
-//       ),
-//       Vec3f.add(
-//         camera.basis^,
-//         Vec3f.multScalar({x: 0.000, y: 0.00001, z: 0.0}, float(dy)),
-//       ),
-//     );
+Dom.addMouseMoveEventListener((x, y) => {
+  let dx = prevX^ - x;
+  let dy = prevY^ - y;
+  prevX := x;
+  prevY := y;
 
-//   render();
-// });
+  if (mousedown^) {
+    camera :=
+      Camera.tilt(
+        camera^,
+        {x: 0.001 *. float(dx), y: (-0.001) *. float(dy)},
+      );
+    render();
+  };
+});
 
 render();
