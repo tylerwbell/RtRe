@@ -8,46 +8,44 @@ let sky: Texture.t =
       x: 0.0,
       y: 1.0,
     },
-    aColor: Color.fromRgb(0.8, 0.7, 1.0),
-    bColor: Color.fromRgb(0.8, 0.7, 1.0),
+    aColor: Color.fromRgb(0.8, 1.0, 1.0),
+    bColor: Color.fromRgb(0.8, 0.8, 1.0),
   });
 
 let make = (): Scene.t => {
   let bodies: ref(list(Shape.t)) = ref([]);
-  for (_ in 0 to 1) {
-    for (a in (-9) to 9) {
-      for (b in (-9) to 9) {
-        let m = Random.float(1.0);
-        let center: Vec3f.t = {
-          x: float(a) +. 0.9 *. Random.float(1.0),
-          y: 0.2,
-          z: float(b) +. 0.9 *. Random.float(1.0),
-        };
-
-        let material: Material.t =
-          if (m < 0.5) {
-            Diffuse({
-              albedo: {
-                x: Random.float(1.0) *. Random.float(1.0),
-                y: Random.float(1.0) *. Random.float(1.0),
-                z: Random.float(1.0) *. Random.float(1.0),
-              },
-            });
-          } else if (m < 0.75) {
-            Specular({
-              albedo: {
-                x: Random.float(1.0),
-                y: Random.float(1.0),
-                z: Random.float(1.0),
-              },
-            });
-          } else {
-            Dielectric({refractiveIndex: 0.2, attenuation: Color.white});
-          };
-
-        bodies := [Sphere({center, radius: 0.2, material}), ...bodies^];
-      };
+  for (_ in 0 to 10) {
+    let a = Random.int(10) - 5;
+    let b = Random.int(10) - 5;
+    let m = Random.float(1.0);
+    let center: Vec3f.t = {
+      x: float(a) +. 0.9 *. Random.float(1.0),
+      y: 0.2,
+      z: float(b) +. 0.9 *. Random.float(1.0),
     };
+
+    let material: Material.t =
+      if (m < 0.5) {
+        Diffuse({
+          albedo: {
+            x: Random.float(1.0) *. Random.float(1.0),
+            y: Random.float(1.0) *. Random.float(1.0),
+            z: Random.float(1.0) *. Random.float(1.0),
+          },
+        });
+      } else if (m < 0.75) {
+        Specular({
+          albedo: {
+            x: Random.float(1.0),
+            y: Random.float(1.0),
+            z: Random.float(1.0),
+          },
+        });
+      } else {
+        Dielectric({refractiveIndex: 0.2, attenuation: Color.white});
+      };
+
+    bodies := [Sphere({center, radius: 0.2, material}), ...bodies^];
   };
 
   bodies :=
