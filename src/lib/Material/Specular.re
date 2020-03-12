@@ -1,7 +1,6 @@
 open Vec3f;
 
-// TODO: is there a better name for this? specular?
-
+// TODO: missing properties
 type t = {albedo: Vec3f.t};
 
 let reflect = (v: Vec3f.t, n: Vec3f.t): Vec3f.t =>

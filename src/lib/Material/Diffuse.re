@@ -1,5 +1,6 @@
 open Vec3f;
 
+// TODO: missing properties
 type t = {albedo: Vec3f.t};
 
 let rec _randomInUnitSphere = (): Vec3f.t => {
