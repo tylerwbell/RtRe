@@ -11,14 +11,11 @@ let canvas = Canvas.create();
 document##body##appendChild(canvas);
 
 let origin: Vec3f.t = {x: 0.0, y: 0.0, z: 0.5};
+let basis: Vec3f.t = {x: (-0.5), y: 0.5, z: (-0.3)};
 
 let camera: Camera.t = {
   origin: ref(origin),
-  basis: {
-    x: (-0.5),
-    y: 0.5,
-    z: (-0.3),
-  },
+  basis: ref(basis),
   dx: {
     x: 1.0,
     y: 0.0,
@@ -93,7 +90,7 @@ let scene: Scene.t = {
 
 let render = (): unit => {
   Renderer.render(
-    {width: 300, height: 300, dpr: 3.0, samples: 40, blur: 1.0, depth: 20},
+    {width: 500, height: 500, dpr: 2.0, samples: 40, blur: 0.0, depth: 20},
     camera,
     scene,
     canvas,
@@ -122,5 +119,31 @@ Dom.addKeyDownEventListener(keycode => {
 
   render();
 });
+
+let prevX = ref(-1);
+let prevY = ref(-1);
+
+// Dom.addMouseMoveEventListener((x, y) => {
+//   let dx = prevX^ - x;
+//   let dy = prevY^ - y;
+//   prevX := x;
+//   prevY := y;
+
+//   Js.log({j|$dx, $dy|j});
+
+//   camera.basis :=
+//     Vec3f.add(
+//       Vec3f.add(
+//         camera.basis^,
+//         Vec3f.multScalar({x: 0.000001, y: 0.000, z: 0.0}, float(dx)),
+//       ),
+//       Vec3f.add(
+//         camera.basis^,
+//         Vec3f.multScalar({x: 0.000, y: 0.00001, z: 0.0}, float(dy)),
+//       ),
+//     );
+
+//   render();
+// });
 
 render();

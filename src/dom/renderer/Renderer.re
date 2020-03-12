@@ -2,45 +2,37 @@ open Camera;
 open Canvas.Context2d;
 open Vec3f;
 
-type rendering = {
-  width: int,
-  height: int,
-  buffer: array(Color.t),
-};
-
+// TODO: fix depth
+// TODO: fix blur
 let render =
-    (t: RenderSettings.t, camera: Camera.t, scene: Scene.t): rendering => {
-  let buffer = Array.make(t.width * t.height, Color.black);
-  for (x in 0 to t.width - 1) {
-    for (y in 0 to t.height - 1) {
-      let ux = float(x) +. Random.float(t.blur) -. t.blur /. 2.0;
-      let uy = float(y) +. Random.float(t.blur) -. t.blur /. 2.0;
+    (width: int, height: int, blur: float, camera: Camera.t, scene: Scene.t)
+    : Rendering.t => {
+  let buffer = Array.make(width * height, Color.black);
+  for (x in 0 to width - 1) {
+    for (y in 0 to height - 1) {
+      let ux = float(x) +. Random.float(blur) -. blur /. 2.0;
+      let uy = float(y) +. Random.float(blur) -. blur /. 2.0;
 
       let ray =
-        camera->rayThrough({
-          x: ux /. float(t.width),
-          y: uy /. float(t.height),
-        });
+        camera->rayThrough({x: ux /. float(width), y: uy /. float(height)});
 
-      buffer[y * t.width + x] = Tracer.trace(scene, ray, t.depth);
+      buffer[y * width + x] = Tracer.trace(scene, ray, 10);
     };
   };
 
-  {width: t.width, height: t.height, buffer};
+  {width, height, buffer};
 };
 
-let draw =
-    (
-      context: Canvas.context2d,
-      width: int,
-      height: int,
-      buffer: array(Color.t),
-    ) => {
-  for (x in 0 to width - 1) {
-    for (y in 0 to height - 1) {
-      let color = buffer[y * width + x];
+let draw = (context: Canvas.context2d, pixel: int, rendering: Rendering.t) => {
+  for (x in 0 to rendering.width - 1) {
+    for (y in 0 to rendering.height - 1) {
+      let color = rendering.buffer[y * rendering.width + x];
       let correctedColor = Filter.apply(GammaFilter, color);
-      context->drawPoint(correctedColor, x, y);
+
+      let ox = x * pixel;
+      let oy = y * pixel;
+      context->setFillStyle(Color.toDomRgbaString(correctedColor));
+      context->fillRect(ox, oy, pixel, pixel);
     };
   };
 };
@@ -52,27 +44,19 @@ let render =
   Canvas.setWidth(canvas, float(t.width) *. t.dpr);
   Canvas.setHeight(canvas, float(t.height) *. t.dpr);
   let context = Canvas.getContext2d(canvas);
+
   context->setScale(t.dpr, t.dpr);
 
-  let sample = ref(1);
-  let buffer = Array.make(t.width * t.height, Color.black);
+  let resolution = ref(20);
 
   let rec loop = () => {
-    let sample' = sample^;
-    let rendering = render(t, camera, scene);
+    let width = t.width / resolution^;
+    let height = t.height / resolution^;
+    let rendering = render(width, height, t.blur, camera, scene);
+    context->draw(resolution^, rendering);
 
-    for (i in 0 to Array.length(buffer) - 1) {
-      buffer[i] =
-        buffer[i]
-        ->multScalar(float(sample^ - 1))
-        ->add(rendering.buffer[i])
-        ->divScalar(float(sample^));
-    };
-
-    context->draw(t.width, t.height, buffer);
-
-    if (sample^ < t.samples) {
-      sample := sample^ + 1;
+    if (resolution^ > 1) {
+      resolution := resolution^ - 1;
       let id = RenderScheduler.enqueue(scheduler, loop);
       RenderScheduler.cancelBefore(scheduler, id);
     };

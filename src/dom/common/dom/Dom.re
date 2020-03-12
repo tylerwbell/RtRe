@@ -15,3 +15,13 @@ let addKeyDownEventListener: (int => unit) => unit = [%bs.raw
     }
 |}
 ];
+
+let addMouseMoveEventListener: ((int, int) => unit) => unit = [%bs.raw
+  {|
+    function(callback) {
+        document.addEventListener("mousemove", e => {
+            callback(e.clientY, e.clientX);
+        })
+    }
+|}
+];
