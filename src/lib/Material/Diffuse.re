@@ -15,7 +15,7 @@ let rec _randomInUnitSphere = (): Vec3f.t => {
 };
 
 // TODO: scatter with probability
-let scatter = (t: t, ray: Ray.t, hit: HitGeometry.t): ScatteredRay.t => {
+let scatter = (t: t, _: Ray.t, hit: HitGeometry.t): ScatteredRay.t => {
   let target = hit.position->add(hit.normal)->add(_randomInUnitSphere());
   let scattered: Ray.t = {
     origin: hit.position,

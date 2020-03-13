@@ -25,7 +25,7 @@ let hit =
   };
 
 let intersect =
-    (t: t, ~tMin: float=0.0, ~tMax: float=max_float, ray: Ray.t)
+    (t: t, ~_tMin: float=0.0, ~_tMax: float=max_float, ray: Ray.t)
     : option(HitGeometry.t) => {
   let oc = Vec3f.sub(ray.origin, t.center);
   let a = Vec3f.dot(ray.direction, ray.direction);

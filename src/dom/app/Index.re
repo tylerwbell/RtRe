@@ -1,5 +1,4 @@
 // Entry point
-open Canvas.Context2d;
 open Camera;
 
 [@bs.val] external document: Js.t({..}) = "document";
@@ -29,7 +28,7 @@ let camera: ref(Camera.t) =
 let scene = DefaultScene.make();
 let render = (): unit => {
   Renderer.render(
-    {width: 750, height: 750, dpr: 1.0, samples: 40, blur: 0.0, depth: 20},
+    {width: 500, height: 500, dpr: 1.0, samples: 40, blur: 0.0, depth: 20},
     camera^,
     scene,
     canvas,
@@ -52,6 +51,7 @@ Dom.addKeyDownEventListener(keycode => {
   | 68 =>
     // d
     camera := Camera.move(camera^, {x: d, y: 0.0, z: 0.0})
+  | _ => ()
   };
 
   render();
@@ -80,3 +80,15 @@ Dom.addMouseMoveEventListener((x, y) => {
 });
 
 render();
+
+Js.log("constructing worker");
+let worker = Worker.create(~scriptUri="dist/util.js");
+
+Worker.send(worker, "index: sending");
+Worker.receive(
+  worker,
+  message => {
+    let data = WorkerEvent.decode(message);
+    Js.log({j|index: received: $data|j});
+  },
+);

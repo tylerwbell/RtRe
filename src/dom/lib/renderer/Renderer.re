@@ -1,6 +1,5 @@
 open Camera;
 open Canvas.Context2d;
-open Vec3f;
 
 // TODO: fix depth
 // TODO: fix blur
