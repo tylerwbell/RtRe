@@ -20,16 +20,41 @@ let render =
   {width, height, buffer};
 };
 
-WorkerContext.trapOnWindow();
+let command: ref(option(RenderWorkerEvent.Command.t)) = ref(None);
 
-WorkerContext.receive(event => {
-  let command: RenderWorkerEvent.Command.t = WorkerEvent.decode(event);
+let processCommand = (command: RenderWorkerEvent.Command.t) => {
   switch (command) {
   | Render(scene, camera, width, height) =>
     Js.log({j|worker: recv: command>render @ $width x $height|j});
     let rendering = render(width, height, 1.0, camera, scene);
     let result: RenderWorkerEvent.Result.t = Result(rendering);
     WorkerContext.send(result);
-    WorkerContext.exit();
   };
-});
+};
+
+// TODO:
+// - start tick with command if none present.
+// - store current tick to prevent making a new one.
+// - clear when dequeued.
+
+WorkerContext.trapOnWindow();
+WorkerContext.receive(event => {command := Some(WorkerEvent.decode(event))});
+
+let rec tick = () => {
+  let _ =
+    Dom.setTimeout(
+      () => {
+        switch (command^) {
+        | Some(dequeueCommand) =>
+          processCommand(dequeueCommand);
+          command := None;
+        | None => ()
+        };
+        tick();
+      },
+      10,
+    );
+  ();
+};
+
+tick();

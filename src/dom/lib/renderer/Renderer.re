@@ -14,17 +14,26 @@ let draw = (context: Canvas.context2d, pixel: int, rendering: Rendering.t) => {
   };
 };
 
-let workerPool: ref(list(Worker.t)) = ref([]);
+let resolution = 2;
+let worker = Worker.create(~scriptUri="worker.js");
 let lastRendering: ref(option(Rendering.t)) = ref(None);
-
-let rec terminateAll = (workers: list(Worker.t)) => {
-  switch (workers) {
-  | [head, ...tail] =>
-    Worker.terminate(head);
-    terminateAll(tail);
-  | [] => ()
-  };
-};
+let lastContext: ref(option(Canvas.context2d)) = ref(None);
+Worker.receive(
+  worker,
+  message => {
+    let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
+    Js.log("recv: result");
+    switch (lastContext^) {
+    | Some(context) =>
+      switch (event) {
+      | Result(rendering) =>
+        lastRendering := Some(rendering);
+        context->draw(resolution, rendering);
+      }
+    | None => ()
+    };
+  },
+);
 
 let render =
     (t: RenderSettings.t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
@@ -32,35 +41,17 @@ let render =
   Canvas.setHeight(canvas, float(t.height) *. t.dpr);
   let context = Canvas.getContext2d(canvas);
 
-  terminateAll(workerPool^);
-  workerPool := [];
   context->setScale(t.dpr, t.dpr);
+  lastContext := Some(context);
 
   switch (lastRendering^) {
-  | Some(rendering) => context->draw(20, rendering)
+  | Some(rendering) => context->draw(resolution, rendering)
   | None => ()
   };
 
-  for (resolution in 20 downto 20) {
-    let width = t.width / resolution;
-    let height = t.height / resolution;
-
-    let worker = Worker.create(~scriptUri="worker.js");
-    workerPool := [worker, ...workerPool^];
-    let command: RenderWorkerEvent.Command.t =
-      Render(scene, camera, width, height);
-    Worker.send(worker, command);
-    Worker.receive(
-      worker,
-      message => {
-        let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
-        Js.log("recv: result");
-        switch (event) {
-        | Result(rendering) =>
-          lastRendering := Some(rendering);
-          context->draw(resolution, rendering);
-        };
-      },
-    );
-  };
+  let width = t.width / resolution;
+  let height = t.height / resolution;
+  let command: RenderWorkerEvent.Command.t =
+    Render(scene, camera, width, height);
+  Worker.send(worker, command);
 };
