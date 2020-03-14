@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const output = path.join(__dirname, 'build/');
 const isProduction = process.env.NODE_ENV === 'production';
 const devServer = {
-  port: 9000,
+  port: 8000,
   contentBase: output,
   historyApiFallback: true
 };
@@ -14,7 +14,7 @@ module.exports = {
   devServer: isProduction ? undefined : devServer,
   entry: {
     app: './lib/js/src/dom/app/Index.bs.js',
-    util: './lib/js/src/dom/lib/worker/RenderWorker.bs.js'
+    worker: './lib/js/src/dom/lib/worker/RenderWorker.bs.js'
   },
   output: {
     path: path.join(__dirname, "dist"),
@@ -22,7 +22,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/dom/app/index.html')
+      template: path.resolve(__dirname, 'src/dom/app/html/index.html'),
+      hash: true,
+      excludeChunks: ["worker"]
     })
   ]
 };

@@ -82,7 +82,7 @@ Dom.addMouseMoveEventListener((x, y) => {
 render();
 
 Js.log("constructing worker");
-let worker = Worker.create(~scriptUri="dist/util.js");
+let worker = Worker.create(~scriptUri="worker.js");
 
 Worker.send(worker, "index: sending");
 Worker.receive(

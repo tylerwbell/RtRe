@@ -86,6 +86,18 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./lib/js/src/dom/common/util/DomUtil.bs.js":
+/*!**************************************************!*\
+  !*** ./lib/js/src/dom/common/util/DomUtil.bs.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\n\nvar $$debugger = (function() {\n        debugger;\n    });\n\nexports.$$debugger = $$debugger;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/util/DomUtil.bs.js?");
+
+/***/ }),
+
 /***/ "./lib/js/src/dom/common/worker/WorkerContext.bs.js":
 /*!**********************************************************!*\
   !*** ./lib/js/src/dom/common/worker/WorkerContext.bs.js ***!
@@ -94,7 +106,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n\nvar receive = (function(callback) {\n      onmessage = callback;\n});\n\nexports.receive = receive;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/worker/WorkerContext.bs.js?");
+eval("\n\n\nvar isWorker = (function() {\n      return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;\n    });\n\nvar receive = (function(callback) {\n      onmessage = callback;\n});\n\nexports.isWorker = isWorker;\nexports.receive = receive;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/worker/WorkerContext.bs.js?");
 
 /***/ }),
 
@@ -106,7 +118,7 @@ eval("\n\n\nvar receive = (function(callback) {\n      onmessage = callback;\n})
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar WorkerContext$Rt = __webpack_require__(/*! ../../common/worker/WorkerContext.bs.js */ \"./lib/js/src/dom/common/worker/WorkerContext.bs.js\");\n\nconsole.log(\"hello, world!\");\n\nWorkerContext$Rt.receive((function ($$event) {\n        var data = $$event.data;\n        console.log(\"worker: received: \" + (String(data) + \"\"));\n        postMessage(\"test\");\n        return /* () */0;\n      }));\n\n/*  Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/worker/RenderWorker.bs.js?");
+eval("\n\nvar DomUtil$Rt = __webpack_require__(/*! ../../common/util/DomUtil.bs.js */ \"./lib/js/src/dom/common/util/DomUtil.bs.js\");\nvar WorkerContext$Rt = __webpack_require__(/*! ../../common/worker/WorkerContext.bs.js */ \"./lib/js/src/dom/common/worker/WorkerContext.bs.js\");\n\nif (!WorkerContext$Rt.isWorker(/* () */0)) {\n  console.log(\"!!! WORKER RUNNING IN WINDOW !!!\");\n  DomUtil$Rt.$$debugger(/* () */0);\n}\n\nvar oneshot = {\n  contents: true\n};\n\nWorkerContext$Rt.receive((function ($$event) {\n        var data = $$event.data;\n        console.log(\"worker: received: \" + (String(data) + \"\"));\n        if (oneshot.contents) {\n          oneshot.contents = false;\n          postMessage(\"inner test\");\n          return /* () */0;\n        } else {\n          return 0;\n        }\n      }));\n\npostMessage(\"outer test\");\n\nexports.oneshot = oneshot;\n/*  Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/worker/RenderWorker.bs.js?");
 
 /***/ })
 
