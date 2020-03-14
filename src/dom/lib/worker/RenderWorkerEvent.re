@@ -1,12 +1,9 @@
 module Command = {
   type t =
-    | LoadScene(Scene.t)
-    | Render
-    | Cancel;
+    | Render(Scene.t, Camera.t, int, int);
 };
 
 module Result = {
   type t =
-    | Result
-    | Cancelled;
+    | Result(Rendering.t);
 };

@@ -458,18 +458,6 @@ eval("\n\nvar Caml_primitive = __webpack_require__(/*! bs-platform/lib/js/caml_p
 
 /***/ }),
 
-/***/ "./lib/js/src/common/math/Vec2f.bs.js":
-/*!********************************************!*\
-  !*** ./lib/js/src/common/math/Vec2f.bs.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n\nfunction mult(v, scalar) {\n  return {\n          x: scalar * v.x,\n          y: scalar * v.y\n        };\n}\n\nfunction div(v, scalar) {\n  return mult(v, 1.0 / scalar);\n}\n\nfunction add(a, b) {\n  return {\n          x: a.x + b.x,\n          y: a.y + b.y\n        };\n}\n\nfunction sub(a, b) {\n  return {\n          x: a.x - b.x,\n          y: a.y - b.y\n        };\n}\n\nfunction dot(a, b) {\n  return a.x * b.x + a.y * b.y;\n}\n\nfunction length(v) {\n  return Math.sqrt(v.x * v.x + v.y * v.y);\n}\n\nfunction normalized(v) {\n  return div(v, length(v));\n}\n\nvar zero = {\n  x: 0.0,\n  y: 0.0\n};\n\nexports.zero = zero;\nexports.mult = mult;\nexports.div = div;\nexports.add = add;\nexports.sub = sub;\nexports.dot = dot;\nexports.length = length;\nexports.normalized = normalized;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/common/math/Vec2f.bs.js?");
-
-/***/ }),
-
 /***/ "./lib/js/src/common/math/Vec3f.bs.js":
 /*!********************************************!*\
   !*** ./lib/js/src/common/math/Vec3f.bs.js ***!
@@ -502,7 +490,7 @@ eval("\n\nvar Block = __webpack_require__(/*! bs-platform/lib/js/block.js */ \".
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar Dom$Rt = __webpack_require__(/*! ../common/dom/Dom.bs.js */ \"./lib/js/src/dom/common/dom/Dom.bs.js\");\nvar Camera$Rt = __webpack_require__(/*! ../../lib/Scene/Camera.bs.js */ \"./lib/js/src/lib/Scene/Camera.bs.js\");\nvar Canvas$Rt = __webpack_require__(/*! ../common/canvas/Canvas.bs.js */ \"./lib/js/src/dom/common/canvas/Canvas.bs.js\");\nvar Renderer$Rt = __webpack_require__(/*! ../lib/renderer/Renderer.bs.js */ \"./lib/js/src/dom/lib/renderer/Renderer.bs.js\");\nvar DefaultScene$Rt = __webpack_require__(/*! ./DefaultScene.bs.js */ \"./lib/js/src/dom/app/DefaultScene.bs.js\");\n\nvar style = document.createElement(\"style\");\n\ndocument.head.appendChild(style);\n\nvar canvas = Canvas$Rt.create(/* () */0);\n\ndocument.body.appendChild(canvas);\n\nvar camera = {\n  contents: {\n    position: {\n      x: 0.0,\n      y: 1.0,\n      z: 10.0\n    },\n    direction: {\n      x: 0.0,\n      y: -0.1,\n      z: -1.0\n    },\n    fov: 80.0,\n    aspect: 2.0\n  }\n};\n\nvar scene = DefaultScene$Rt.make(/* () */0);\n\nfunction render(param) {\n  return Renderer$Rt.render({\n              width: 500,\n              height: 500,\n              dpr: 1.0,\n              samples: 40,\n              blur: 0.0,\n              depth: 20\n            }, camera.contents, scene, canvas);\n}\n\nDom$Rt.addKeyDownEventListener((function (keycode) {\n        if (keycode >= 69) {\n          if (keycode !== 83) {\n            if (keycode !== 87) {\n              \n            } else {\n              camera.contents = Camera$Rt.moveAlongDirection(camera.contents, 5.0);\n            }\n          } else {\n            camera.contents = Camera$Rt.moveAlongDirection(camera.contents, -1.0 * 5.0);\n          }\n        } else if (keycode !== 65) {\n          if (keycode >= 68) {\n            camera.contents = Camera$Rt.move(camera.contents, {\n                  x: 5.0,\n                  y: 0.0,\n                  z: 0.0\n                });\n          }\n          \n        } else {\n          camera.contents = Camera$Rt.move(camera.contents, {\n                x: -1.0 * 5.0,\n                y: 0.0,\n                z: 0.0\n              });\n        }\n        return render(/* () */0);\n      }));\n\nvar prevX = {\n  contents: -1\n};\n\nvar prevY = {\n  contents: -1\n};\n\nvar mousedown = {\n  contents: false\n};\n\nDom$Rt.addMouseDownEventListener((function (param) {\n        mousedown.contents = true;\n        return /* () */0;\n      }));\n\nDom$Rt.addMouseUpEventListener((function (param) {\n        mousedown.contents = false;\n        return /* () */0;\n      }));\n\nDom$Rt.addMouseMoveEventListener((function (x, y) {\n        var dx = prevX.contents - x | 0;\n        var dy = prevY.contents - y | 0;\n        prevX.contents = x;\n        prevY.contents = y;\n        if (mousedown.contents) {\n          camera.contents = Camera$Rt.tilt(camera.contents, {\n                x: 0.001 * dx,\n                y: -0.001 * dy\n              });\n          return render(/* () */0);\n        } else {\n          return 0;\n        }\n      }));\n\nrender(/* () */0);\n\nconsole.log(\"constructing worker\");\n\nvar worker = new Worker(\"worker.js\");\n\nworker.postMessage(\"index: sending\");\n\nworker.onmessage = (function (message) {\n    var data = message.data;\n    console.log(\"index: received: \" + (String(data) + \"\"));\n    return /* () */0;\n  });\n\nvar d = 5.0;\n\nexports.style = style;\nexports.canvas = canvas;\nexports.camera = camera;\nexports.scene = scene;\nexports.render = render;\nexports.d = d;\nexports.prevX = prevX;\nexports.prevY = prevY;\nexports.mousedown = mousedown;\nexports.worker = worker;\n/* style Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/app/Index.bs.js?");
+eval("\n\nvar Dom$Rt = __webpack_require__(/*! ../common/dom/Dom.bs.js */ \"./lib/js/src/dom/common/dom/Dom.bs.js\");\nvar Camera$Rt = __webpack_require__(/*! ../../lib/Scene/Camera.bs.js */ \"./lib/js/src/lib/Scene/Camera.bs.js\");\nvar Canvas$Rt = __webpack_require__(/*! ../common/canvas/Canvas.bs.js */ \"./lib/js/src/dom/common/canvas/Canvas.bs.js\");\nvar Renderer$Rt = __webpack_require__(/*! ../lib/renderer/Renderer.bs.js */ \"./lib/js/src/dom/lib/renderer/Renderer.bs.js\");\nvar DefaultScene$Rt = __webpack_require__(/*! ./DefaultScene.bs.js */ \"./lib/js/src/dom/app/DefaultScene.bs.js\");\n\nvar style = document.createElement(\"style\");\n\ndocument.head.appendChild(style);\n\nvar canvas = Canvas$Rt.create(/* () */0);\n\ndocument.body.appendChild(canvas);\n\nvar camera = {\n  contents: {\n    position: {\n      x: 0.0,\n      y: 1.0,\n      z: 10.0\n    },\n    direction: {\n      x: 0.0,\n      y: -0.1,\n      z: -1.0\n    },\n    fov: 80.0,\n    aspect: 2.0\n  }\n};\n\nvar scene = DefaultScene$Rt.make(/* () */0);\n\nfunction render(param) {\n  return Renderer$Rt.render({\n              width: 500,\n              height: 500,\n              dpr: 1.0,\n              samples: 40,\n              blur: 0.0,\n              depth: 20\n            }, camera.contents, scene, canvas);\n}\n\nDom$Rt.addKeyDownEventListener((function (keycode) {\n        if (keycode >= 69) {\n          if (keycode !== 83) {\n            if (keycode !== 87) {\n              \n            } else {\n              camera.contents = Camera$Rt.moveAlongDirection(camera.contents, 5.0);\n            }\n          } else {\n            camera.contents = Camera$Rt.moveAlongDirection(camera.contents, -1.0 * 5.0);\n          }\n        } else if (keycode !== 65) {\n          if (keycode >= 68) {\n            camera.contents = Camera$Rt.move(camera.contents, {\n                  x: 5.0,\n                  y: 0.0,\n                  z: 0.0\n                });\n          }\n          \n        } else {\n          camera.contents = Camera$Rt.move(camera.contents, {\n                x: -1.0 * 5.0,\n                y: 0.0,\n                z: 0.0\n              });\n        }\n        return render(/* () */0);\n      }));\n\nvar prevX = {\n  contents: -1\n};\n\nvar prevY = {\n  contents: -1\n};\n\nvar mousedown = {\n  contents: false\n};\n\nDom$Rt.addMouseDownEventListener((function (param) {\n        mousedown.contents = true;\n        return /* () */0;\n      }));\n\nDom$Rt.addMouseUpEventListener((function (param) {\n        mousedown.contents = false;\n        return /* () */0;\n      }));\n\nDom$Rt.addMouseMoveEventListener((function (x, y) {\n        var dx = prevX.contents - x | 0;\n        var dy = prevY.contents - y | 0;\n        prevX.contents = x;\n        prevY.contents = y;\n        if (mousedown.contents) {\n          camera.contents = Camera$Rt.tilt(camera.contents, {\n                x: 0.001 * dx,\n                y: -0.001 * dy\n              });\n          return render(/* () */0);\n        } else {\n          return 0;\n        }\n      }));\n\nrender(/* () */0);\n\nvar d = 5.0;\n\nexports.style = style;\nexports.canvas = canvas;\nexports.camera = camera;\nexports.scene = scene;\nexports.render = render;\nexports.d = d;\nexports.prevX = prevX;\nexports.prevY = prevY;\nexports.mousedown = mousedown;\n/* style Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/app/Index.bs.js?");
 
 /***/ }),
 
@@ -530,18 +518,6 @@ eval("\n\n\nvar getElementById = (function(arg) {\n  return document.getElementB
 
 /***/ }),
 
-/***/ "./lib/js/src/dom/lib/renderer/RenderScheduler.bs.js":
-/*!***********************************************************!*\
-  !*** ./lib/js/src/dom/lib/renderer/RenderScheduler.bs.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Curry = __webpack_require__(/*! bs-platform/lib/js/curry.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/curry.js\");\n\nfunction make(param) {\n  return {\n          items: {\n            contents: /* [] */0\n          },\n          _currentId: {\n            contents: 0\n          }\n        };\n}\n\nfunction enqueue(t, item) {\n  var animationId = requestAnimationFrame((function (param) {\n          return Curry._1(item, /* () */0);\n        }));\n  var itemId = t._currentId.contents;\n  var item$1 = {\n    id: itemId,\n    _animationId: animationId\n  };\n  t._currentId.contents = itemId + 1 | 0;\n  t.items.contents = /* :: */[\n    item$1,\n    t.items.contents\n  ];\n  return itemId;\n}\n\nfunction cancelBefore(items, itemId) {\n  if (items) {\n    var head = items[0];\n    var tailFiltered = cancelBefore(items[1], itemId);\n    if (head.id >= itemId) {\n      return /* :: */[\n              head,\n              tailFiltered\n            ];\n    } else {\n      cancelAnimationFrame(head._animationId);\n      return tailFiltered;\n    }\n  } else {\n    return /* [] */0;\n  }\n}\n\nfunction cancelBefore$1(t, itemId) {\n  t.items.contents = cancelBefore(t.items.contents, itemId);\n  return /* () */0;\n}\n\nexports.make = make;\nexports.enqueue = enqueue;\nexports.cancelBefore = cancelBefore$1;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/RenderScheduler.bs.js?");
-
-/***/ }),
-
 /***/ "./lib/js/src/dom/lib/renderer/Renderer.bs.js":
 /*!****************************************************!*\
   !*** ./lib/js/src/dom/lib/renderer/Renderer.bs.js ***!
@@ -550,7 +526,7 @@ eval("\n\nvar Curry = __webpack_require__(/*! bs-platform/lib/js/curry.js */ \".
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar Random = __webpack_require__(/*! bs-platform/lib/js/random.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/random.js\");\nvar Color$Rt = __webpack_require__(/*! ../../../common/color/Color.bs.js */ \"./lib/js/src/common/color/Color.bs.js\");\nvar Camera$Rt = __webpack_require__(/*! ../../../lib/Scene/Camera.bs.js */ \"./lib/js/src/lib/Scene/Camera.bs.js\");\nvar Filter$Rt = __webpack_require__(/*! ../../../lib/Filter/Filter.bs.js */ \"./lib/js/src/lib/Filter/Filter.bs.js\");\nvar Tracer$Rt = __webpack_require__(/*! ../../../lib/Tracer/Tracer.bs.js */ \"./lib/js/src/lib/Tracer/Tracer.bs.js\");\nvar Caml_array = __webpack_require__(/*! bs-platform/lib/js/caml_array.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_array.js\");\nvar Caml_int32 = __webpack_require__(/*! bs-platform/lib/js/caml_int32.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_int32.js\");\nvar RenderScheduler$Rt = __webpack_require__(/*! ./RenderScheduler.bs.js */ \"./lib/js/src/dom/lib/renderer/RenderScheduler.bs.js\");\n\nfunction render(width, height, blur, camera, scene) {\n  var buffer = Caml_array.caml_make_vect(Caml_int32.imul(width, height), Color$Rt.black);\n  for(var x = 0 ,x_finish = width - 1 | 0; x <= x_finish; ++x){\n    for(var y = 0 ,y_finish = height - 1 | 0; y <= y_finish; ++y){\n      var ux = x + Random.$$float(blur) - blur / 2.0;\n      var uy = y + Random.$$float(blur) - blur / 2.0;\n      var ray = Camera$Rt.rayThrough(camera, {\n            x: ux / width,\n            y: uy / height\n          });\n      Caml_array.caml_array_set(buffer, Caml_int32.imul(y, width) + x | 0, Tracer$Rt.trace(scene, ray, 10));\n    }\n  }\n  return {\n          width: width,\n          height: height,\n          buffer: buffer\n        };\n}\n\nfunction draw(context, pixel, rendering) {\n  for(var x = 0 ,x_finish = rendering.width - 1 | 0; x <= x_finish; ++x){\n    for(var y = 0 ,y_finish = rendering.height - 1 | 0; y <= y_finish; ++y){\n      var color = Caml_array.caml_array_get(rendering.buffer, Caml_int32.imul(y, rendering.width) + x | 0);\n      var correctedColor = Filter$Rt.apply(/* GammaFilter */0, color);\n      var ox = Caml_int32.imul(x, pixel);\n      var oy = Caml_int32.imul(y, pixel);\n      context.fillStyle = Color$Rt.toDomRgbaString(correctedColor);\n      context.fillRect(ox, oy, pixel, pixel);\n    }\n  }\n  return /* () */0;\n}\n\nvar scheduler = RenderScheduler$Rt.make(/* () */0);\n\nfunction render$1(t, camera, scene, canvas) {\n  canvas.width = t.width * t.dpr;\n  canvas.height = t.height * t.dpr;\n  var context = canvas.getContext(\"2d\");\n  context.scale(t.dpr, t.dpr);\n  var resolution = {\n    contents: 20\n  };\n  var loop = function (param) {\n    var width = Caml_int32.div(t.width, resolution.contents);\n    var height = Caml_int32.div(t.height, resolution.contents);\n    var rendering = render(width, height, t.blur, camera, scene);\n    draw(context, resolution.contents, rendering);\n    if (resolution.contents > 1) {\n      resolution.contents = resolution.contents - 1 | 0;\n      var id = RenderScheduler$Rt.enqueue(scheduler, loop);\n      return RenderScheduler$Rt.cancelBefore(scheduler, id);\n    } else {\n      return 0;\n    }\n  };\n  var id = RenderScheduler$Rt.enqueue(scheduler, loop);\n  return RenderScheduler$Rt.cancelBefore(scheduler, id);\n}\n\nexports.draw = draw;\nexports.scheduler = scheduler;\nexports.render = render$1;\n/* scheduler Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/Renderer.bs.js?");
+eval("\n\nvar Color$Rt = __webpack_require__(/*! ../../../common/color/Color.bs.js */ \"./lib/js/src/common/color/Color.bs.js\");\nvar Filter$Rt = __webpack_require__(/*! ../../../lib/Filter/Filter.bs.js */ \"./lib/js/src/lib/Filter/Filter.bs.js\");\nvar Caml_array = __webpack_require__(/*! bs-platform/lib/js/caml_array.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_array.js\");\nvar Caml_int32 = __webpack_require__(/*! bs-platform/lib/js/caml_int32.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_int32.js\");\n\nfunction draw(context, pixel, rendering) {\n  for(var x = 0 ,x_finish = rendering.width - 1 | 0; x <= x_finish; ++x){\n    for(var y = 0 ,y_finish = rendering.height - 1 | 0; y <= y_finish; ++y){\n      var color = Caml_array.caml_array_get(rendering.buffer, Caml_int32.imul(y, rendering.width) + x | 0);\n      var correctedColor = Filter$Rt.apply(/* GammaFilter */0, color);\n      var ox = Caml_int32.imul(x, pixel);\n      var oy = Caml_int32.imul(y, pixel);\n      context.fillStyle = Color$Rt.toDomRgbaString(correctedColor);\n      context.fillRect(ox, oy, pixel, pixel);\n    }\n  }\n  return /* () */0;\n}\n\nvar workerPool = {\n  contents: /* [] */0\n};\n\nvar lastRendering = {\n  contents: undefined\n};\n\nfunction terminateAll(_workers) {\n  while(true) {\n    var workers = _workers;\n    if (workers) {\n      workers[0].terminate();\n      _workers = workers[1];\n      continue ;\n    } else {\n      return /* () */0;\n    }\n  };\n}\n\nfunction render(t, camera, scene, canvas) {\n  canvas.width = t.width * t.dpr;\n  canvas.height = t.height * t.dpr;\n  var context = canvas.getContext(\"2d\");\n  terminateAll(workerPool.contents);\n  workerPool.contents = /* [] */0;\n  context.scale(t.dpr, t.dpr);\n  var match = lastRendering.contents;\n  if (match !== undefined) {\n    draw(context, 20, match);\n  }\n  for(var resolution = 20; resolution >= 20; --resolution){\n    var width = Caml_int32.div(t.width, resolution);\n    var height = Caml_int32.div(t.height, resolution);\n    var worker = new Worker(\"worker.js\");\n    workerPool.contents = /* :: */[\n      worker,\n      workerPool.contents\n    ];\n    var command = /* Render */[\n      scene,\n      camera,\n      width,\n      height\n    ];\n    worker.postMessage(command);\n    worker.onmessage = (function(resolution){\n    return function (message) {\n      var $$event = message.data;\n      console.log(\"recv: result\");\n      var rendering = $$event[0];\n      lastRendering.contents = rendering;\n      return draw(context, resolution, rendering);\n    }\n    }(resolution));\n  }\n  return /* () */0;\n}\n\nexports.draw = draw;\nexports.workerPool = workerPool;\nexports.lastRendering = lastRendering;\nexports.terminateAll = terminateAll;\nexports.render = render;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/Renderer.bs.js?");
 
 /***/ }),
 
@@ -578,54 +554,6 @@ eval("\n\n\nfunction apply(color) {\n  return {\n          x: Math.sqrt(color.x)
 
 /***/ }),
 
-/***/ "./lib/js/src/lib/Material/Dielectric.bs.js":
-/*!**************************************************!*\
-  !*** ./lib/js/src/lib/Material/Dielectric.bs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\nvar Specular$Rt = __webpack_require__(/*! ./Specular.bs.js */ \"./lib/js/src/lib/Material/Specular.bs.js\");\n\nfunction refract(v, n, niOverNt) {\n  var uv = Vec3f$Rt.normalized(v);\n  var dt = Vec3f$Rt.dot(uv, n);\n  var discriminant = 1.0 - niOverNt * niOverNt * (1.0 - dt * dt);\n  if (discriminant > 0.0) {\n    return Vec3f$Rt.sub(Vec3f$Rt.multScalar(Vec3f$Rt.sub(uv, Vec3f$Rt.multScalar(n, dt)), niOverNt), Vec3f$Rt.multScalar(n, Math.sqrt(discriminant)));\n  }\n  \n}\n\nfunction scatter(t, ray, hit) {\n  var properties = Vec3f$Rt.dot(ray.direction, hit.normal) > 0.0 ? ({\n        outwardNormal: Vec3f$Rt.multScalar(hit.normal, -1.0),\n        niOverNt: t.refractiveIndex\n      }) : ({\n        outwardNormal: hit.normal,\n        niOverNt: 1.0 / t.refractiveIndex\n      });\n  var refracted = refract(ray.direction, properties.outwardNormal, properties.niOverNt);\n  if (refracted !== undefined) {\n    var ray_origin = hit.position;\n    var ray$1 = {\n      origin: ray_origin,\n      direction: refracted\n    };\n    return {\n            ray: ray$1,\n            attenuation: t.attenuation\n          };\n  } else {\n    var reflected = Specular$Rt.reflect(Vec3f$Rt.normalized(ray.direction), hit.normal);\n    var ray_origin$1 = hit.position;\n    var ray$2 = {\n      origin: ray_origin$1,\n      direction: reflected\n    };\n    return {\n            ray: ray$2,\n            attenuation: t.attenuation\n          };\n  }\n}\n\nexports.refract = refract;\nexports.scatter = scatter;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Material/Dielectric.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Material/Diffuse.bs.js":
-/*!***********************************************!*\
-  !*** ./lib/js/src/lib/Material/Diffuse.bs.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Random = __webpack_require__(/*! bs-platform/lib/js/random.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/random.js\");\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\n\nfunction _randomInUnitSphere(_param) {\n  while(true) {\n    var p = Vec3f$Rt.sub(Vec3f$Rt.multScalar({\n              x: Random.$$float(1.0),\n              y: Random.$$float(1.0),\n              z: Random.$$float(1.0)\n            }, 2.0), {\n          x: 1.0,\n          y: 1.0,\n          z: 1.0\n        });\n    if (Vec3f$Rt.lengthSquared(p) >= 1.0) {\n      _param = /* () */0;\n      continue ;\n    } else {\n      return p;\n    }\n  };\n}\n\nfunction scatter(t, param, hit) {\n  var target = Vec3f$Rt.add(Vec3f$Rt.add(hit.position, hit.normal), _randomInUnitSphere(/* () */0));\n  var scattered_origin = hit.position;\n  var scattered_direction = Vec3f$Rt.sub(target, hit.position);\n  var scattered = {\n    origin: scattered_origin,\n    direction: scattered_direction\n  };\n  return {\n          ray: scattered,\n          attenuation: t.albedo\n        };\n}\n\nexports._randomInUnitSphere = _randomInUnitSphere;\nexports.scatter = scatter;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Material/Diffuse.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Material/Material.bs.js":
-/*!************************************************!*\
-  !*** ./lib/js/src/lib/Material/Material.bs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Diffuse$Rt = __webpack_require__(/*! ./Diffuse.bs.js */ \"./lib/js/src/lib/Material/Diffuse.bs.js\");\nvar Specular$Rt = __webpack_require__(/*! ./Specular.bs.js */ \"./lib/js/src/lib/Material/Specular.bs.js\");\nvar Dielectric$Rt = __webpack_require__(/*! ./Dielectric.bs.js */ \"./lib/js/src/lib/Material/Dielectric.bs.js\");\n\nfunction scatter(t, ray, hit) {\n  switch (t.tag | 0) {\n    case /* Diffuse */0 :\n        return Diffuse$Rt.scatter(t[0], ray, hit);\n    case /* Specular */1 :\n        return Specular$Rt.scatter(t[0], ray, hit);\n    case /* Dielectric */2 :\n        return Dielectric$Rt.scatter(t[0], ray, hit);\n    \n  }\n}\n\nexports.scatter = scatter;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Material/Material.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Material/Specular.bs.js":
-/*!************************************************!*\
-  !*** ./lib/js/src/lib/Material/Specular.bs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\n\nfunction reflect(v, n) {\n  return Vec3f$Rt.sub(v, Vec3f$Rt.multScalar(n, 2.0 * Vec3f$Rt.dot(v, n)));\n}\n\nfunction scatter(t, ray, hit) {\n  var reflected = reflect(Vec3f$Rt.normalized(ray.direction), hit.normal);\n  var scattered_origin = hit.position;\n  var scattered = {\n    origin: scattered_origin,\n    direction: reflected\n  };\n  if (Vec3f$Rt.dot(reflected, hit.normal) > 0.0) {\n    return {\n            ray: scattered,\n            attenuation: t.albedo\n          };\n  }\n  \n}\n\nexports.reflect = reflect;\nexports.scatter = scatter;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Material/Specular.bs.js?");
-
-/***/ }),
-
 /***/ "./lib/js/src/lib/Scene/Camera.bs.js":
 /*!*******************************************!*\
   !*** ./lib/js/src/lib/Scene/Camera.bs.js ***!
@@ -635,114 +563,6 @@ eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js *
 
 "use strict";
 eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\n\nvar right = {\n  x: 1.0,\n  y: 0.0,\n  z: 0.0\n};\n\nvar up = {\n  x: 0.0,\n  y: 1.0,\n  z: 0.0\n};\n\nfunction moveAlongDirection(t, by) {\n  return {\n          position: Vec3f$Rt.add(t.position, Vec3f$Rt.multScalar(t.direction, by)),\n          direction: t.direction,\n          fov: t.fov,\n          aspect: t.aspect\n        };\n}\n\nfunction move(t, by) {\n  return {\n          position: Vec3f$Rt.add(t.position, by),\n          direction: t.direction,\n          fov: t.fov,\n          aspect: t.aspect\n        };\n}\n\nfunction tilt(t, by) {\n  return {\n          position: t.position,\n          direction: Vec3f$Rt.add(Vec3f$Rt.add(t.direction, Vec3f$Rt.multScalar(right, by.x)), Vec3f$Rt.multScalar(up, by.y)),\n          fov: t.fov,\n          aspect: t.aspect\n        };\n}\n\nfunction rayThrough(t, point) {\n  var theta = t.fov * 3.141592653589793 / 180.0;\n  var viewportOrigin = Vec3f$Rt.add(Vec3f$Rt.sub(t.direction, Vec3f$Rt.multScalar(right, theta / 2.0)), Vec3f$Rt.multScalar(up, theta / 2.0));\n  return {\n          origin: t.position,\n          direction: Vec3f$Rt.sub(Vec3f$Rt.add(viewportOrigin, Vec3f$Rt.multScalar(right, theta * point.x)), Vec3f$Rt.multScalar(up, theta * point.y))\n        };\n}\n\nvar pi = 3.141592653589793;\n\nexports.pi = pi;\nexports.right = right;\nexports.up = up;\nexports.moveAlongDirection = moveAlongDirection;\nexports.move = move;\nexports.tilt = tilt;\nexports.rayThrough = rayThrough;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Scene/Camera.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Scene/Shape/Shape.bs.js":
-/*!************************************************!*\
-  !*** ./lib/js/src/lib/Scene/Shape/Shape.bs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Sphere$Rt = __webpack_require__(/*! ./Sphere.bs.js */ \"./lib/js/src/lib/Scene/Shape/Sphere.bs.js\");\nvar Pervasives = __webpack_require__(/*! bs-platform/lib/js/pervasives.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/pervasives.js\");\n\nfunction material(shape) {\n  return shape[0].material;\n}\n\nfunction intersect(shape, $staropt$star, $staropt$star$1, ray) {\n  var tMin = $staropt$star !== undefined ? $staropt$star : 0.0;\n  var tMax = $staropt$star$1 !== undefined ? $staropt$star$1 : Pervasives.max_float;\n  return Sphere$Rt.intersect(shape[0], tMin, tMax, ray);\n}\n\nexports.material = material;\nexports.intersect = intersect;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Scene/Shape/Shape.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Scene/Shape/Sphere.bs.js":
-/*!*************************************************!*\
-  !*** ./lib/js/src/lib/Scene/Shape/Sphere.bs.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Ray$Rt = __webpack_require__(/*! ../../Tracer/Ray.bs.js */ \"./lib/js/src/lib/Tracer/Ray.bs.js\");\nvar Vec3f$Rt = __webpack_require__(/*! ../../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\nvar Pervasives = __webpack_require__(/*! bs-platform/lib/js/pervasives.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/pervasives.js\");\n\nfunction hit(record, $staropt$star, $staropt$star$1, ray, t) {\n  var tMin = $staropt$star !== undefined ? $staropt$star : 0.0001;\n  var tMax = $staropt$star$1 !== undefined ? $staropt$star$1 : Pervasives.max_float;\n  if (t > tMin && t < tMax) {\n    var position = Ray$Rt.pointAtParameter(ray, t);\n    var normal = Vec3f$Rt.divScalar(Vec3f$Rt.sub(position, record.center), record.radius);\n    return {\n            t: t,\n            position: position,\n            normal: normal\n          };\n  }\n  \n}\n\nfunction intersect(t, $staropt$star, $staropt$star$1, ray) {\n  var oc = Vec3f$Rt.sub(ray.origin, t.center);\n  var a = Vec3f$Rt.dot(ray.direction, ray.direction);\n  var b = Vec3f$Rt.dot(oc, ray.direction);\n  var c = Vec3f$Rt.dot(oc, oc) - t.radius * t.radius;\n  var discriminant = b * b - a * c;\n  if (discriminant > 0.0) {\n    var root = Math.sqrt(discriminant);\n    var t$prime = (-1.0 * b - root) / a;\n    var match = hit(t, undefined, undefined, ray, t$prime);\n    if (match !== undefined) {\n      return match;\n    } else {\n      var t$prime$1 = (-1.0 * b + root) / a;\n      return hit(t, undefined, undefined, ray, t$prime$1);\n    }\n  }\n  \n}\n\nexports.hit = hit;\nexports.intersect = intersect;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Scene/Shape/Sphere.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Texture/CheckerTexture.bs.js":
-/*!*****************************************************!*\
-  !*** ./lib/js/src/lib/Texture/CheckerTexture.bs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Color$Rt = __webpack_require__(/*! ../../common/color/Color.bs.js */ \"./lib/js/src/common/color/Color.bs.js\");\n\nvar standard_onColor = Color$Rt.fromRgb(0.2, 0.3, 0.1);\n\nvar standard_offColor = Color$Rt.fromRgb(0.9, 0.9, 0.9);\n\nvar standard = {\n  rows: 10,\n  columns: 15,\n  onColor: standard_onColor,\n  offColor: standard_offColor\n};\n\nfunction colorAt(t, p) {\n  if (Math.floor(p.y * t.rows % 2.0) === Math.floor(p.x * t.columns % 2.0)) {\n    return t.onColor;\n  } else {\n    return t.offColor;\n  }\n}\n\nexports.standard = standard;\nexports.colorAt = colorAt;\n/* standard Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Texture/CheckerTexture.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Texture/LinearGradient.bs.js":
-/*!*****************************************************!*\
-  !*** ./lib/js/src/lib/Texture/LinearGradient.bs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Vec2f$Rt = __webpack_require__(/*! ../../common/math/Vec2f.bs.js */ \"./lib/js/src/common/math/Vec2f.bs.js\");\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\n\nfunction colorAt(t, p) {\n  var direction = Vec2f$Rt.sub(t.b, t.a);\n  var length = Vec2f$Rt.length(direction);\n  var normalized = Vec2f$Rt.div(direction, length);\n  var r = Vec2f$Rt.dot(normalized, p);\n  return Vec3f$Rt.add(Vec3f$Rt.multScalar(t.aColor, 1.0 - r), Vec3f$Rt.multScalar(t.bColor, r));\n}\n\nexports.colorAt = colorAt;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Texture/LinearGradient.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Texture/SolidTexture.bs.js":
-/*!***************************************************!*\
-  !*** ./lib/js/src/lib/Texture/SolidTexture.bs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n\nfunction colorAt(t, param) {\n  return t;\n}\n\nexports.colorAt = colorAt;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Texture/SolidTexture.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Texture/Texture.bs.js":
-/*!**********************************************!*\
-  !*** ./lib/js/src/lib/Texture/Texture.bs.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar SolidTexture$Rt = __webpack_require__(/*! ./SolidTexture.bs.js */ \"./lib/js/src/lib/Texture/SolidTexture.bs.js\");\nvar CheckerTexture$Rt = __webpack_require__(/*! ./CheckerTexture.bs.js */ \"./lib/js/src/lib/Texture/CheckerTexture.bs.js\");\nvar LinearGradient$Rt = __webpack_require__(/*! ./LinearGradient.bs.js */ \"./lib/js/src/lib/Texture/LinearGradient.bs.js\");\n\nfunction colorAt(t, point) {\n  switch (t.tag | 0) {\n    case /* SolidTexture */0 :\n        return SolidTexture$Rt.colorAt(t[0], point);\n    case /* LinearGradient */1 :\n        return LinearGradient$Rt.colorAt(t[0], point);\n    case /* CheckerTexture */2 :\n        return CheckerTexture$Rt.colorAt(t[0], point);\n    \n  }\n}\n\nexports.colorAt = colorAt;\n/* CheckerTexture-Rt Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Texture/Texture.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Tracer/Hit.bs.js":
-/*!*****************************************!*\
-  !*** ./lib/js/src/lib/Tracer/Hit.bs.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n\nfunction nearest(a, b) {\n  if (a.geometry.t < b.geometry.t) {\n    return a;\n  } else {\n    return b;\n  }\n}\n\nexports.nearest = nearest;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Tracer/Hit.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Tracer/Ray.bs.js":
-/*!*****************************************!*\
-  !*** ./lib/js/src/lib/Tracer/Ray.bs.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\n\nfunction pointAtParameter(r, t) {\n  return Vec3f$Rt.add(r.origin, Vec3f$Rt.multScalar(r.direction, t));\n}\n\nexports.pointAtParameter = pointAtParameter;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Tracer/Ray.bs.js?");
-
-/***/ }),
-
-/***/ "./lib/js/src/lib/Tracer/Tracer.bs.js":
-/*!********************************************!*\
-  !*** ./lib/js/src/lib/Tracer/Tracer.bs.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar Hit$Rt = __webpack_require__(/*! ./Hit.bs.js */ \"./lib/js/src/lib/Tracer/Hit.bs.js\");\nvar Color$Rt = __webpack_require__(/*! ../../common/color/Color.bs.js */ \"./lib/js/src/common/color/Color.bs.js\");\nvar Shape$Rt = __webpack_require__(/*! ../Scene/Shape/Shape.bs.js */ \"./lib/js/src/lib/Scene/Shape/Shape.bs.js\");\nvar Vec3f$Rt = __webpack_require__(/*! ../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\nvar Texture$Rt = __webpack_require__(/*! ../Texture/Texture.bs.js */ \"./lib/js/src/lib/Texture/Texture.bs.js\");\nvar Material$Rt = __webpack_require__(/*! ../Material/Material.bs.js */ \"./lib/js/src/lib/Material/Material.bs.js\");\n\nfunction _trace(bodies, ray) {\n  if (bodies) {\n    var body = bodies[0];\n    var match = Shape$Rt.intersect(body, undefined, undefined, ray);\n    var match$1 = _trace(bodies[1], ray);\n    if (match !== undefined) {\n      var hitA = match;\n      if (match$1 !== undefined) {\n        return Hit$Rt.nearest({\n                    geometry: hitA,\n                    body: body\n                  }, match$1);\n      } else {\n        return {\n                geometry: hitA,\n                body: body\n              };\n      }\n    } else if (match$1 !== undefined) {\n      return match$1;\n    } else {\n      return ;\n    }\n  }\n  \n}\n\nfunction trace(scene, ray, traceDepth) {\n  if (traceDepth === 0) {\n    return Color$Rt.black;\n  } else {\n    var match = _trace(scene.bodies, ray);\n    if (match !== undefined) {\n      var hit = match;\n      var scattered = Material$Rt.scatter(Shape$Rt.material(hit.body), ray, hit.geometry);\n      if (scattered !== undefined) {\n        var scattered$1 = scattered;\n        return Vec3f$Rt.mult(trace(scene, scattered$1.ray, traceDepth - 1 | 0), scattered$1.attenuation);\n      } else {\n        return Color$Rt.black;\n      }\n    } else {\n      var unit = Vec3f$Rt.normalized(ray.direction);\n      return Texture$Rt.colorAt(scene.background, {\n                  x: unit.x,\n                  y: unit.y\n                });\n    }\n  }\n}\n\nexports._trace = _trace;\nexports.trace = trace;\n/* Texture-Rt Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/lib/Tracer/Tracer.bs.js?");
 
 /***/ }),
 

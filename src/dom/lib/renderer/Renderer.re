@@ -1,26 +1,4 @@
-open Camera;
 open Canvas.Context2d;
-
-// TODO: fix depth
-// TODO: fix blur
-let render =
-    (width: int, height: int, blur: float, camera: Camera.t, scene: Scene.t)
-    : Rendering.t => {
-  let buffer = Array.make(width * height, Color.black);
-  for (x in 0 to width - 1) {
-    for (y in 0 to height - 1) {
-      let ux = float(x) +. Random.float(blur) -. blur /. 2.0;
-      let uy = float(y) +. Random.float(blur) -. blur /. 2.0;
-
-      let ray =
-        camera->rayThrough({x: ux /. float(width), y: uy /. float(height)});
-
-      buffer[y * width + x] = Tracer.trace(scene, ray, 10);
-    };
-  };
-
-  {width, height, buffer};
-};
 
 let draw = (context: Canvas.context2d, pixel: int, rendering: Rendering.t) => {
   for (x in 0 to rendering.width - 1) {
@@ -36,7 +14,17 @@ let draw = (context: Canvas.context2d, pixel: int, rendering: Rendering.t) => {
   };
 };
 
-let scheduler = RenderScheduler.make();
+let workerPool: ref(list(Worker.t)) = ref([]);
+let lastRendering: ref(option(Rendering.t)) = ref(None);
+
+let rec terminateAll = (workers: list(Worker.t)) => {
+  switch (workers) {
+  | [head, ...tail] =>
+    Worker.terminate(head);
+    terminateAll(tail);
+  | [] => ()
+  };
+};
 
 let render =
     (t: RenderSettings.t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
@@ -44,23 +32,35 @@ let render =
   Canvas.setHeight(canvas, float(t.height) *. t.dpr);
   let context = Canvas.getContext2d(canvas);
 
+  terminateAll(workerPool^);
+  workerPool := [];
   context->setScale(t.dpr, t.dpr);
 
-  let resolution = ref(20);
-
-  let rec loop = () => {
-    let width = t.width / resolution^;
-    let height = t.height / resolution^;
-    let rendering = render(width, height, t.blur, camera, scene);
-    context->draw(resolution^, rendering);
-
-    if (resolution^ > 1) {
-      resolution := resolution^ - 1;
-      let id = RenderScheduler.enqueue(scheduler, loop);
-      RenderScheduler.cancelBefore(scheduler, id);
-    };
+  switch (lastRendering^) {
+  | Some(rendering) => context->draw(20, rendering)
+  | None => ()
   };
 
-  let id = RenderScheduler.enqueue(scheduler, loop);
-  RenderScheduler.cancelBefore(scheduler, id);
+  for (resolution in 20 downto 20) {
+    let width = t.width / resolution;
+    let height = t.height / resolution;
+
+    let worker = Worker.create(~scriptUri="worker.js");
+    workerPool := [worker, ...workerPool^];
+    let command: RenderWorkerEvent.Command.t =
+      Render(scene, camera, width, height);
+    Worker.send(worker, command);
+    Worker.receive(
+      worker,
+      message => {
+        let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
+        Js.log("recv: result");
+        switch (event) {
+        | Result(rendering) =>
+          lastRendering := Some(rendering);
+          context->draw(resolution, rendering);
+        };
+      },
+    );
+  };
 };

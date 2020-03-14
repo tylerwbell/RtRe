@@ -80,15 +80,3 @@ Dom.addMouseMoveEventListener((x, y) => {
 });
 
 render();
-
-Js.log("constructing worker");
-let worker = Worker.create(~scriptUri="worker.js");
-
-Worker.send(worker, "index: sending");
-Worker.receive(
-  worker,
-  message => {
-    let data = WorkerEvent.decode(message);
-    Js.log({j|index: received: $data|j});
-  },
-);

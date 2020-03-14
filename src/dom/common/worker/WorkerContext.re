@@ -1,6 +1,13 @@
 // Send data to
 [@bs.val] external send: 'a => unit = "postMessage";
 
+// Terminate the worker.
+let exit: unit => unit = [%bs.raw {|
+  function() {
+    close();
+  }
+|}];
+
 let isWorker: unit => bool = [%bs.raw
   {|
     function() {
@@ -9,8 +16,10 @@ let isWorker: unit => bool = [%bs.raw
 |}
 ];
 
+// Stop execution if running outside of a WebWorker.
+// TODO: not really tested, probably junk.
 let trapOnWindow = () =>
-  if (!WorkerContext.isWorker()) {
+  if (!isWorker()) {
     Js.log("!!! WORKER RUNNING IN WINDOW !!!");
     DomUtil.debugger();
   };
