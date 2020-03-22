@@ -26,14 +26,8 @@ let camera: ref(Camera.t) =
   });
 
 let scene = DefaultScene.make();
-let render = (): unit => {
-  Renderer.render(
-    {width: 500, height: 500, dpr: 1.0, samples: 40, blur: 0.0, depth: 20},
-    camera^,
-    scene,
-    canvas,
-  );
-};
+let renderer = ref(Renderer.make(canvas));
+renderer := Renderer.setScene(renderer^, scene);
 
 // TODO: keyboard controller
 let d = 5.0;
@@ -54,7 +48,8 @@ Dom.addKeyDownEventListener(keycode => {
   | _ => ()
   };
 
-  render();
+  renderer := Renderer.setCamera(renderer^, camera^);
+  ();
 });
 
 let prevX = ref(-1);
@@ -75,8 +70,8 @@ Dom.addMouseMoveEventListener((x, y) => {
         camera^,
         {x: 0.001 *. float(dx), y: (-0.001) *. float(dy)},
       );
-    render();
+    renderer := Renderer.setCamera(renderer^, camera^);
   };
 });
 
-render();
+renderer := Renderer.setCamera(renderer^, camera^);

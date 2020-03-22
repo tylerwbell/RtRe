@@ -1,57 +1,65 @@
-open Canvas.Context2d;
+module Settings = {
+  type t = {
+    width: int,
+    height: int,
+    samples: int,
+    blur: float,
+    depth: int,
+  };
 
-let draw = (context: Canvas.context2d, pixel: int, rendering: Rendering.t) => {
-  for (x in 0 to rendering.width - 1) {
-    for (y in 0 to rendering.height - 1) {
-      let color = rendering.buffer[y * rendering.width + x];
-      let correctedColor = Filter.apply(GammaFilter, color);
-
-      let ox = x * pixel;
-      let oy = y * pixel;
-      context->setFillStyle(Color.toDomRgbaString(correctedColor));
-      context->fillRect(ox, oy, pixel, pixel);
-    };
+  let default = (): t => {
+    {width: 300, height: 300, samples: 40, blur: 0.0, depth: 20};
   };
 };
 
-let resolution = 2;
-let worker = Worker.create(~scriptUri="worker.js");
-let lastRendering: ref(option(Rendering.t)) = ref(None);
-let lastContext: ref(option(Canvas.context2d)) = ref(None);
-Worker.receive(
-  worker,
-  message => {
-    let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
-    Js.log("recv: result");
-    switch (lastContext^) {
-    | Some(context) =>
-      switch (event) {
-      | Result(rendering) =>
-        lastRendering := Some(rendering);
-        context->draw(resolution, rendering);
-      }
-    | None => ()
-    };
-  },
-);
+type t = {
+  settings: Settings.t,
+  canvas: Canvas.t,
+  scene: option(Scene.t),
+  camera: option(Camera.t),
+  rendering: option(Rendering.t),
+  worker: Worker.t,
+};
 
-let render =
-    (t: RenderSettings.t, camera: Camera.t, scene: Scene.t, canvas: Canvas.t) => {
-  Canvas.setWidth(canvas, float(t.width) *. t.dpr);
-  Canvas.setHeight(canvas, float(t.height) *. t.dpr);
+let make = (canvas: Canvas.t): t => {
+  let settings = Settings.default();
+
+  Canvas.setWidth(canvas, float(settings.width));
+  Canvas.setHeight(canvas, float(settings.height));
   let context = Canvas.getContext2d(canvas);
 
-  context->setScale(t.dpr, t.dpr);
-  lastContext := Some(context);
+  let worker = Worker.create(~scriptUri="worker.js");
+  Worker.receive(
+    worker,
+    message => {
+      let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
+      switch (event) {
+      | Result(rendering) => DomCompositor.draw(context, rendering)
+      };
+    },
+  );
 
-  switch (lastRendering^) {
-  | Some(rendering) => context->draw(resolution, rendering)
-  | None => ()
+  {settings, canvas, scene: None, camera: None, rendering: None, worker};
+};
+
+let dispatchRender = (t: t) => {
+  switch (t.scene, t.camera) {
+  | (Some(scene), Some(camera)) =>
+    let command: RenderWorkerEvent.Command.t =
+      Render(scene, camera, t.settings.width, t.settings.height);
+    Worker.send(t.worker, command);
+  | _ => ()
   };
+};
 
-  let width = t.width / resolution;
-  let height = t.height / resolution;
-  let command: RenderWorkerEvent.Command.t =
-    Render(scene, camera, width, height);
-  Worker.send(worker, command);
+let setScene = (t: t, scene: Scene.t): t => {
+  let t' = {...t, scene: Some(scene)};
+  dispatchRender(t');
+  t';
+};
+
+let setCamera = (t: t, camera: Camera.t): t => {
+  let t' = {...t, camera: Some(camera)};
+  dispatchRender(t');
+  t';
 };

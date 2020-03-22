@@ -1,5 +1,4 @@
 open Camera;
-open Canvas.Context2d;
 
 let render =
     (width: int, height: int, blur: float, camera: Camera.t, scene: Scene.t)
@@ -36,11 +35,11 @@ let processCommand = (command: RenderWorkerEvent.Command.t) => {
 // - start tick with command if none present.
 // - store current tick to prevent making a new one.
 // - clear when dequeued.
+// - work queue, for active tasks and checking for cancellation.
 
 WorkerContext.trapOnWindow();
-WorkerContext.receive(event => {command := Some(WorkerEvent.decode(event))});
 
-let rec tick = () => {
+let tick = () => {
   let _ =
     Dom.setTimeout(
       () => {
@@ -49,12 +48,14 @@ let rec tick = () => {
           processCommand(dequeueCommand);
           command := None;
         | None => ()
-        };
-        tick();
+        }
       },
       10,
     );
   ();
 };
 
-tick();
+WorkerContext.receive(event => {
+  command := Some(WorkerEvent.decode(event));
+  tick();
+});
