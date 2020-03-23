@@ -4,8 +4,8 @@ type context2d;
 let create: unit => t = [%bs.raw
   {|function() {
   var node = document.createElement('canvas')
-  node.style.width = '100%';
-  node.style.height = '100%';
+  node.style.width = '500px';
+  node.style.height = '500px';
   return node
 }|}
 ];

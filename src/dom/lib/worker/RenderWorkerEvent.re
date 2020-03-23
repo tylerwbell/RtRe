@@ -1,9 +1,18 @@
+module RenderCommand = {
+  type t = {
+    camera: Camera.t,
+    slice: Rendering.Chunk.slice,
+  };
+};
+
 module Command = {
   type t =
-    | Render(Scene.t, Camera.t, int, int);
+    | SetScene(Scene.t)
+    | Render(RenderCommand.t)
+    | Cancel;
 };
 
 module Result = {
   type t =
-    | Result(Rendering.t);
+    | Result(Rendering.Chunk.t);
 };

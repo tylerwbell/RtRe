@@ -6,7 +6,11 @@ let getElementById: string => element = [%bs.raw
  }|}
 ];
 
-[@bs.val] external setTimeout: (unit => unit, int) => float = "setTimeout";
+[@bs.val] external _setTimeout: (unit => unit, int) => float = "setTimeout";
+
+let setTimeout = (timeout: int, item: unit => unit): float => {
+  _setTimeout(item, timeout);
+};
 
 let addKeyDownEventListener: (int => unit) => unit = [%bs.raw
   {|

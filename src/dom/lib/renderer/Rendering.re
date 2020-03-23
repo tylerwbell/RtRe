@@ -1,9 +1,22 @@
 open Vec3f;
 
-type t = {
-  buffer: array(Color.t),
-  width: int,
-  height: int,
+module Chunk = {
+  type point = {
+    color: Color.t,
+    samples: int,
+  };
+
+  type slice = {
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+  };
+
+  type t = {
+    slice,
+    buffer: array(point),
+  };
 };
 
 let blend = (a: array(Color.t), b: array(Color.t), weight: float) => {
