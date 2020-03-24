@@ -7,12 +7,15 @@ module RenderCommand = {
 
 module Command = {
   type t =
+    | Init(int)
     | SetScene(Scene.t)
     | Render(RenderCommand.t)
     | Cancel;
 };
 
+// TODO: rename
 module Result = {
   type t =
-    | Result(Rendering.Chunk.t);
+    | Result(Rendering.Chunk.t)
+    | Pull;
 };
