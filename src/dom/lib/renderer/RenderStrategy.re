@@ -3,18 +3,27 @@ let make =
     : list(RenderWorkerEvent.Command.t) => {
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
-  for (_ in 0 to 100) {
-    let command: RenderWorkerEvent.Command.t =
-      Render({
-        camera,
-        slice: {
-          x: 0,
-          y: 0,
-          width: settings.width,
-          height: settings.height,
-        },
-      });
-    commands := [command, ...commands^];
+  let divisions = 9;
+  let width = settings.width / divisions;
+  let height = settings.height / divisions;
+
+  for (_ in 0 to 5) {
+    for (divX in 0 to divisions - 1) {
+      for (divY in 0 to divisions - 1) {
+        let command: RenderWorkerEvent.Command.t =
+          Render({
+            camera,
+            slice: {
+              x: divX * width,
+              y: divY * height,
+              width,
+              height,
+            },
+          });
+
+        commands := [command, ...commands^];
+      };
+    };
   };
 
   commands^;

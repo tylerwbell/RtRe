@@ -1,7 +1,7 @@
 module RenderCommand = {
   type t = {
     camera: Camera.t,
-    slice: Rendering.Chunk.slice,
+    slice: Chunk.slice,
   };
 };
 

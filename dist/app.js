@@ -562,7 +562,7 @@ eval("\n\n\nfunction $$default(param) {\n  return {\n          width: 300,\n    
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar Block = __webpack_require__(/*! bs-platform/lib/js/block.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/block.js\");\n\nfunction make(settings, camera) {\n  var commands = /* [] */0;\n  for(var _for = 0; _for <= 100; ++_for){\n    var command = /* Render */Block.__(2, [{\n          camera: camera,\n          slice: {\n            x: 0,\n            y: 0,\n            width: settings.width,\n            height: settings.height\n          }\n        }]);\n    commands = /* :: */[\n      command,\n      commands\n    ];\n  }\n  return commands;\n}\n\nexports.make = make;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/RenderStrategy.bs.js?");
+eval("\n\nvar Block = __webpack_require__(/*! bs-platform/lib/js/block.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/block.js\");\nvar Caml_int32 = __webpack_require__(/*! bs-platform/lib/js/caml_int32.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_int32.js\");\n\nfunction make(settings, camera) {\n  var commands = /* [] */0;\n  var width = settings.width / 9 | 0;\n  var height = settings.height / 9 | 0;\n  for(var _for = 0; _for <= 5; ++_for){\n    for(var divX = 0; divX <= 8; ++divX){\n      for(var divY = 0; divY <= 8; ++divY){\n        var command = /* Render */Block.__(2, [{\n              camera: camera,\n              slice: {\n                x: Caml_int32.imul(divX, width),\n                y: Caml_int32.imul(divY, height),\n                width: width,\n                height: height\n              }\n            }]);\n        commands = /* :: */[\n          command,\n          commands\n        ];\n      }\n    }\n  }\n  return commands;\n}\n\nexports.make = make;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/RenderStrategy.bs.js?");
 
 /***/ }),
 
@@ -583,10 +583,9 @@ eval("\n\nvar Block = __webpack_require__(/*! bs-platform/lib/js/block.js */ \".
   !*** ./lib/js/src/dom/lib/renderer/Rendering.bs.js ***!
   \*****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-eval("\n\nvar Vec3f$Rt = __webpack_require__(/*! ../../../common/math/Vec3f.bs.js */ \"./lib/js/src/common/math/Vec3f.bs.js\");\nvar Caml_array = __webpack_require__(/*! bs-platform/lib/js/caml_array.js */ \"../../.config/yarn/global/node_modules/bs-platform/lib/js/caml_array.js\");\n\nfunction blend(a, b) {\n  for(var i = 0 ,i_finish = a.buffer.length - 1 | 0; i <= i_finish; ++i){\n    var pointA = Caml_array.caml_array_get(a.buffer, i);\n    var pointB = Caml_array.caml_array_get(b.buffer, i);\n    var samplesA = pointA.samples;\n    var samplesB = pointB.samples;\n    var samples = samplesA + samplesB | 0;\n    var color = Vec3f$Rt.divScalar(Vec3f$Rt.add(Vec3f$Rt.multScalar(pointA.color, samplesA), Vec3f$Rt.multScalar(pointB.color, samplesB)), samples);\n    Caml_array.caml_array_set(a.buffer, i, {\n          color: color,\n          samples: samples\n        });\n  }\n  return /* () */0;\n}\n\nvar Chunk = {\n  blend: blend\n};\n\nexports.Chunk = Chunk;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/Rendering.bs.js?");
+eval("/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/lib/renderer/Rendering.bs.js?");
 
 /***/ }),
 

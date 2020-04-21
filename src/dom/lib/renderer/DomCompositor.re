@@ -2,7 +2,7 @@ open Canvas.Context2d;
 
 type t = {
   context: Canvas.context2d,
-  rendering: Rendering.Chunk.t,
+  rendering: Chunk.t,
 };
 
 let make = (canvas: Canvas.t, width: int, height: int): t => {
@@ -10,7 +10,7 @@ let make = (canvas: Canvas.t, width: int, height: int): t => {
   Canvas.setHeight(canvas, float(height));
   let context = Canvas.getContext2d(canvas);
 
-  let defaultPoint: Rendering.Chunk.point = {color: Color.black, samples: 0};
+  let defaultPoint: Chunk.point = {color: Color.black, samples: 0};
   let buffer = Array.make(width * height, defaultPoint);
 
   {

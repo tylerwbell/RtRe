@@ -18,11 +18,12 @@ let render = (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t) => {
   let heightF = float(slice.height);
   let dx = slice.width - slice.x;
   let dy = slice.height - slice.y;
+  log({j|rendering $dx, $dy|j});
 
   let defaultPoint: Rendering.Chunk.point = {color: Color.black, samples: 0};
   let buffer = Array.make(dx * dy, defaultPoint);
-  for (x in slice.x to slice.width - 1) {
-    for (y in slice.y to slice.height - 1) {
+  for (x in slice.x to slice.x + slice.width - 1) {
+    for (y in slice.y to slice.y + slice.height - 1) {
       let ux = float(x) +. Random.float(blur) -. blur /. 2.0;
       let uy = float(y) +. Random.float(blur) -. blur /. 2.0;
 
