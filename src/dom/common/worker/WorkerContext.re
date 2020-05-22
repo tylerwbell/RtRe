@@ -17,7 +17,7 @@ let isWorker: unit => bool = [%bs.raw
 ];
 
 // Stop execution if running outside of a WebWorker.
-// TODO: not really tested, probably junk.
+// TODO: not tested, probably junk.
 let trapOnWindow = () =>
   if (!isWorker()) {
     Js.log("!!! WORKER RUNNING IN WINDOW !!!");

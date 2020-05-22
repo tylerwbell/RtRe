@@ -1,3 +1,4 @@
+// TODO: type parameter
 type t = {
   x: float,
   y: float,

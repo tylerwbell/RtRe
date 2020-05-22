@@ -3,7 +3,7 @@ type t = {
   compositor: DomCompositor.t,
   scene: option(Scene.t),
   camera: option(Camera.t),
-  rendering: option(Rendering.Chunk.t),
+  rendering: option(RenderSlice.t),
   scheduler: RenderScheduler.t,
 };
 
@@ -12,7 +12,11 @@ let make = (canvas: Canvas.t): t => {
   let compositor =
     DomCompositor.make(canvas, settings.width, settings.height);
 
-  let scheduler = RenderScheduler.make(DomCompositor.draw(compositor));
+  let scheduler =
+    RenderScheduler.make((slice: RenderSlice.t) => {
+      RenderSlice.blend(compositor.rendering, slice);
+      DomCompositor.draw(compositor);
+    });
 
   {
     settings,

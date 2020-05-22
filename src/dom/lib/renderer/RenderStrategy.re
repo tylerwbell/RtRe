@@ -13,11 +13,15 @@ let make =
         let command: RenderWorkerEvent.Command.t =
           Render({
             camera,
-            slice: {
-              x: divX * width,
-              y: divY * height,
-              width,
-              height,
+            frame: {
+              origin: {
+                x: divX * width,
+                y: divY * height,
+              },
+              size: {
+                width,
+                height,
+              },
             },
           });
 

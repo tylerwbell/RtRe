@@ -24,12 +24,12 @@ let _processWorkerResult =
     (
       t: t,
       worker: Worker.t,
-      sink: Rendering.Chunk.t => unit,
+      sink: RenderSlice.t => unit,
       message: WorkerEvent.t,
     ) => {
-  let event: RenderWorkerEvent.Result.t = WorkerEvent.decode(message);
+  let event: RenderWorkerEvent.Output.t = WorkerEvent.decode(message);
   switch (event) {
-  | Result(rendering) => sink(rendering)
+  | Rendering(slice) => sink(slice)
   | Pull =>
     t.free := [worker, ...t.free^];
     schedule(t);
@@ -37,7 +37,7 @@ let _processWorkerResult =
 };
 
 // TODO: become ref(t) or object type?
-let make = (sink: Rendering.Chunk.t => unit): t => {
+let make = (sink: RenderSlice.t => unit): t => {
   let workQueue: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
   let workers: ref(list(Worker.t)) = ref([]);
   let free: ref(list(Worker.t)) = ref([]);

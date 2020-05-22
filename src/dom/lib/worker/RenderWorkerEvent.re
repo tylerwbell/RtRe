@@ -1,7 +1,7 @@
 module RenderCommand = {
   type t = {
     camera: Camera.t,
-    slice: Chunk.slice,
+    frame: Rect.t(int),
   };
 };
 
@@ -13,9 +13,8 @@ module Command = {
     | Cancel;
 };
 
-// TODO: rename
-module Result = {
+module Output = {
   type t =
-    | Result(Rendering.Chunk.t)
+    | Rendering(RenderSlice.t)
     | Pull;
 };
