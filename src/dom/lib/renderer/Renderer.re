@@ -31,6 +31,7 @@ let make = (canvas: Canvas.t): t => {
 let dispatchRender = (t: t) => {
   switch (t.scene, t.camera) {
   | (Some(_), Some(camera)) =>
+    RenderSlice.clear(t.compositor.rendering, Color.black);
     let commands = RenderStrategy.make(t.settings, camera);
     RenderScheduler.map(t.scheduler, commands);
   | _ => ()

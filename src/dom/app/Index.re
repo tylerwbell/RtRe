@@ -12,17 +12,17 @@ document##body##appendChild(canvas);
 let camera: ref(Camera.t) =
   ref({
     position: {
-      x: 0.0,
-      y: 1.0,
-      z: 10.0,
+      x: (-5.0),
+      y: 5.0,
+      z: 7.0,
     },
     direction: {
       x: 0.0,
-      y: (-0.1),
-      z: (-1.0),
+      y: 0.0,
+      z: (-10.0),
     },
-    fov: 80.0,
-    aspect: 2.0,
+    fov: 100.,
+    aspect: 1.0,
   });
 
 let scene = DefaultScene.make();

@@ -3,11 +3,12 @@ let make =
     : list(RenderWorkerEvent.Command.t) => {
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
-  let divisions = 9;
+  let passes = 10;
+  let divisions = 10;
   let width = settings.width / divisions;
   let height = settings.height / divisions;
 
-  for (_ in 0 to 5) {
+  for (_ in 0 to passes) {
     for (divX in 0 to divisions - 1) {
       for (divY in 0 to divisions - 1) {
         let command: RenderWorkerEvent.Command.t =

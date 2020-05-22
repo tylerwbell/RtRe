@@ -10,22 +10,19 @@ let make = (canvas: Canvas.t, width: int, height: int): t => {
   Canvas.setHeight(canvas, float(height));
   let context = Canvas.getContext2d(canvas);
 
-  let defaultPoint: RenderSlice.sample = {color: Color.black, samples: 0};
-  let buffer = Array2d.make(width, height, defaultPoint);
-
-  {
-    context,
-    rendering: {
-      frame: {
+  let slice =
+    RenderSlice.make(
+      {
         origin: Point.zero,
         size: {
           width,
           height,
         },
       },
-      buffer,
-    },
-  };
+      Color.black,
+    );
+
+  {context, rendering: slice};
 };
 
 let draw = (t: t) => {

@@ -11,12 +11,11 @@ let log = (message: string) => {
 let render = (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t) => {
   // render configuration
   let frame = command.frame;
-  let blur = 2.0; // TODO: from command
-  let rayDepth = 10; // TODO: from command
+  let blur = 0.0; // TODO: from command
+  let rayDepth = 4; // TODO: from command
 
-  // output buffer
-  let defaultSample: RenderSlice.sample = {color: Color.green, samples: 0};
-  let buffer = Array2d.make(frame->width, frame->height, defaultSample);
+  // result slice
+  let slice = RenderSlice.make(command.frame, Color.black);
 
   let widthF = float(frame->width);
   let heightF = float(frame->height);
@@ -31,11 +30,11 @@ let render = (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t) => {
         command.camera->rayThrough({x: ux /. widthF, y: uy /. heightF});
       let color = Tracer.trace(scene, ray, rayDepth);
 
-      Array2d.set(buffer, dx, dy, {color, samples: 1});
+      Array2d.set(slice.buffer, dx, dy, {color, samples: 1});
     };
   };
 
-  let result: RenderWorkerEvent.Output.t = Rendering({frame, buffer});
+  let result: RenderWorkerEvent.Output.t = Rendering(slice);
   WorkerContext.send(result);
   log("complete");
 };

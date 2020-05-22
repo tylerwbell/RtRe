@@ -15,6 +15,10 @@ let make = (width: int, height: int, defaultValue: 'a): t('a) => {
   };
 };
 
+let fill = (array: t('a), value: 'a) => {
+  Array.fill(array.buffer, 0, array.size.width * array.size.height, value);
+};
+
 let get = (array: t('a), x: int, y: int): 'a => {
   let i = x + y * array.size.width;
   array.buffer[i];

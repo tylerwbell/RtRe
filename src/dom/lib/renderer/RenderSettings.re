@@ -7,5 +7,5 @@ type t = {
 };
 
 let default = (): t => {
-  {width: 100, height: 100, samples: 40, blur: 0.0, depth: 10};
+  {width: 200, height: 200, samples: 40, blur: 0.0, depth: 10};
 };

@@ -10,6 +10,19 @@ type t = {
   buffer: Array2d.t(sample),
 };
 
+let make = (frame: Rect.t(int), clearColor: Color.t): t => {
+  let defaultSample: sample = {color: clearColor, samples: 0};
+  let buffer =
+    Array2d.make(frame.size.width, frame.size.height, defaultSample);
+
+  {frame, buffer};
+};
+
+let clear = (t: t, clearColor: Color.t) => {
+  let clearSample: sample = {color: clearColor, samples: 0};
+  Array2d.fill(t.buffer, clearSample);
+};
+
 // Blend two slices. Source frame should be inside or equal to destination's frame.
 let blend = (dest: t, source: t) => {
   for (sourceX in 0 to source.frame.size.width - 1) {
