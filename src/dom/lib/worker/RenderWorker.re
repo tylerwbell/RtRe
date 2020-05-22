@@ -1,24 +1,32 @@
 open Camera;
 open Rect;
 
+// Init
+WorkerContext.trapOnWindow();
 Random.init(int_of_float(Js.Date.now()));
-
 let id = ref(0);
+
+// Util
 let log = (message: string) => {
   Js.log(string_of_int(id^) ++ " > " ++ message);
 };
 
-let render = (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t) => {
+// TODO: support doing multiple samples here
+// Render
+let render =
+    (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t)
+    : RenderSlice.t => {
   // render configuration
+  let viewport = command.viewport;
   let frame = command.frame;
-  let blur = 0.0; // TODO: from command
-  let rayDepth = 4; // TODO: from command
+  let blur = 1.0; // TODO: from command
+  let rayDepth = 5; // TODO: from command
 
   // result slice
   let slice = RenderSlice.make(command.frame, Color.black);
 
-  let widthF = float(frame->width);
-  let heightF = float(frame->height);
+  let widthF = float(viewport.width);
+  let heightF = float(viewport.height);
   for (dx in 0 to frame->width - 1) {
     for (dy in 0 to frame->height - 1) {
       let x = frame->minX + dx;
@@ -34,13 +42,9 @@ let render = (scene: Scene.t, command: RenderWorkerEvent.RenderCommand.t) => {
     };
   };
 
-  let result: RenderWorkerEvent.Output.t = Rendering(slice);
-  WorkerContext.send(result);
-  log("complete");
+  slice;
 };
 
-// Init
-WorkerContext.trapOnWindow();
 let scene: ref(option(Scene.t)) = ref(None);
 let commandQueue: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
@@ -48,7 +52,10 @@ let processCommand = (command: RenderWorkerEvent.Command.t) => {
   log("command");
   switch (command, scene^) {
   | (Init(_), _) => ()
-  | (Render(command), Some(scene)) => render(scene, command)
+  | (Render(command), Some(scene)) =>
+    let slice = render(scene, command);
+    let result: RenderWorkerEvent.Output.t = Rendering(slice);
+    WorkerContext.send(result);
   | (SetScene(t), _) => scene := Some(t)
   | (Cancel, _) => ()
   | (Render(_), None) => ()

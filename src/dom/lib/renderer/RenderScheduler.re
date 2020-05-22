@@ -43,7 +43,9 @@ let make = (sink: RenderSlice.t => unit): t => {
   let free: ref(list(Worker.t)) = ref([]);
   let t = {workQueue, workers, free};
 
-  for (i in 0 to 9) {
+  let workerCount = 10;
+
+  for (i in 0 to workerCount - 1) {
     let worker =
       Worker.create(
         ~scriptUri="worker.js?id=" ++ string_of_int(Random.int(10000)),

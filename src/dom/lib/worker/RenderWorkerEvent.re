@@ -1,6 +1,7 @@
 module RenderCommand = {
   type t = {
     camera: Camera.t,
+    viewport: Size.t(int),
     frame: Rect.t(int),
   };
 };

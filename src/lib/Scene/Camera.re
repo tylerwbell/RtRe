@@ -39,6 +39,7 @@ let tilt = (t: t, by: Vec2f.t): t => {
   };
 };
 
+// TODO: docs
 let rayThrough = (t: t, point: Vec2f.t): Ray.t => {
   // TODO: very suspicious of this
   let theta = t.fov *. pi /. 180.0;

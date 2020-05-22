@@ -3,7 +3,7 @@ let make =
     : list(RenderWorkerEvent.Command.t) => {
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
-  let passes = 10;
+  let passes = 0;
   let divisions = 10;
   let width = settings.width / divisions;
   let height = settings.height / divisions;
@@ -14,6 +14,10 @@ let make =
         let command: RenderWorkerEvent.Command.t =
           Render({
             camera,
+            viewport: {
+              width: settings.width,
+              height: settings.height,
+            },
             frame: {
               origin: {
                 x: divX * width,
