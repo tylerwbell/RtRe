@@ -10,11 +10,6 @@ Random.init(int_of_float(Js.Date.now()));
 let id: ref(int) = ref(0);
 let scene: ref(option(Scene.t)) = ref(None);
 
-// Util
-let log = (message: string) => {
-  Js.log(string_of_int(id^) ++ " > " ++ message);
-};
-
 // TODO: support doing multiple samples here
 // Render
 let render =

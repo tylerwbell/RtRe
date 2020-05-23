@@ -7,10 +7,6 @@ type t = {
 
 type config = {workerCount: int};
 
-let log = (message: string) => {
-  Js.log({j|scheduler: $message|j});
-};
-
 let rec schedule = (t: t): unit =>
   if (!Queue.is_empty(t.workQueue) && !Queue.is_empty(t.freeWorkers)) {
     let item = Queue.take(t.workQueue);
