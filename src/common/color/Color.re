@@ -1,6 +1,7 @@
 type t = Vec3f.t;
 
 let fromRgb = (r, g, b): t => {x: r, y: g, z: b};
+
 let toDomRgbaString = (t: t) => {
   let r' = 255.0 *. t.x;
   let g' = 255.0 *. t.y;

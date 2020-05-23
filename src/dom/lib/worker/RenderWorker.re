@@ -1,5 +1,6 @@
 open Camera;
 open Rect;
+open Collections;
 
 // Init
 WorkerContext.trapOnWindow();
@@ -41,14 +42,15 @@ let render =
         command.camera->rayThrough({x: ux /. widthF, y: uy /. heightF});
       let color = Tracer.trace(scene, ray, rayDepth);
 
-      Array2d.set(slice.buffer, dx, dy, {color, samples: 1});
+      Array2d.set(slice.buffer, dx, dy, color);
+      Array2d.set(slice.samples, dx, dy, 1);
     };
   };
 
   slice;
 };
 
-let execute = (looper: RunLoop.t, command: RenderWorkerEvent.Command.t) => {
+let execute = (_: RunLoop.t, command: RenderWorkerEvent.Command.t) => {
   switch (command, scene^) {
   | (Init(id'), _) => id := id'
   | (Render(command), Some(scene)) =>

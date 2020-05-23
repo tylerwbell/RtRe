@@ -1,26 +1,22 @@
+open Collections;
 open Vec3f;
-
-type sample = {
-  color: Color.t,
-  samples: int,
-};
 
 type t = {
   frame: Rect.t(int),
-  buffer: Array2d.t(sample),
+  buffer: Array2d.t(Color.t),
+  samples: Array2d.t(int),
 };
 
 let make = (frame: Rect.t(int), clearColor: Color.t): t => {
-  let defaultSample: sample = {color: clearColor, samples: 0};
-  let buffer =
-    Array2d.make(frame.size.width, frame.size.height, defaultSample);
+  let buffer = Array2d.make(frame.size.width, frame.size.height, clearColor);
+  let samples = Array2d.make(frame.size.width, frame.size.height, 0);
 
-  {frame, buffer};
+  {frame, buffer, samples};
 };
 
 let clear = (t: t, clearColor: Color.t) => {
-  let clearSample: sample = {color: clearColor, samples: 0};
-  Array2d.fill(t.buffer, clearSample);
+  Array2d.fill(t.buffer, clearColor);
+  Array2d.fill(t.samples, 0);
 };
 
 // Blend two slices. Source frame should be inside or equal to destination's frame.
@@ -32,22 +28,24 @@ let blend = (dest: t, source: t) => {
         source.frame.origin.y + sourceY,
       );
 
-      let destSample = Array2d.get(dest.buffer, destX, destY);
-      let sourceSample = Array2d.get(source.buffer, sourceX, sourceY);
-      let destSamples = float(destSample.samples);
-      let sourceSamples = float(sourceSample.samples);
+      let destColor = Array2d.get(dest.buffer, destX, destY);
+      let sourceColor = Array2d.get(source.buffer, sourceX, sourceY);
+      let destSamples = float(Array2d.get(dest.samples, destX, destY));
+      let sourceSamples =
+        float(Array2d.get(source.samples, sourceX, sourceY));
 
       let color =
-        sourceSample.color
+        sourceColor
         ->multScalar(sourceSamples)
-        ->add(destSample.color->multScalar(destSamples))
+        ->add(destColor->multScalar(destSamples))
         ->divScalar(destSamples +. sourceSamples);
 
+      Array2d.set(dest.buffer, destX, destY, color);
       Array2d.set(
-        dest.buffer,
+        dest.samples,
         destX,
         destY,
-        {color, samples: int_of_float(destSamples +. sourceSamples)},
+        int_of_float(destSamples +. sourceSamples),
       );
     };
   };
