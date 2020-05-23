@@ -37,13 +37,13 @@ let _processWorkerResult =
 };
 
 // TODO: become ref(t) or object type?
-let make = (sink: RenderSlice.t => unit): t => {
+let make = (settings: RenderSettings.t, sink: RenderSlice.t => unit): t => {
   let workQueue: Queue.t(RenderWorkerEvent.Command.t) = Queue.create();
   let workers: ref(list(Worker.t)) = ref([]);
   let freeWorkers: Queue.t(Worker.t) = Queue.create();
   let t = {workQueue, workers, freeWorkers};
 
-  let workerCount = 8;
+  let workerCount = settings.workers;
 
   for (i in 0 to workerCount - 1) {
     let worker =

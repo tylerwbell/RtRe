@@ -13,10 +13,13 @@ let make = (canvas: Canvas.t): t => {
     DomCompositor.make(canvas, settings.width, settings.height);
 
   let scheduler =
-    RenderScheduler.make((slice: RenderSlice.t) => {
-      RenderSlice.blend(compositor.rendering, slice);
-      DomCompositor.draw(compositor);
-    });
+    RenderScheduler.make(
+      settings,
+      (slice: RenderSlice.t) => {
+        RenderSlice.blend(compositor.rendering, slice);
+        DomCompositor.draw(compositor);
+      },
+    );
 
   {
     settings,

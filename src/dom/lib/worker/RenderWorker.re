@@ -23,8 +23,8 @@ let render =
   // render configuration
   let viewport = command.viewport;
   let frame = command.frame;
-  let blur = 1.0; // TODO: from command
-  let rayDepth = 10; // TODO: from command
+  let blur = command.config.blur;
+  let depth = command.config.depth;
 
   // result slice
   let slice = RenderSlice.make(command.frame, Color.black);
@@ -40,7 +40,7 @@ let render =
 
       let ray =
         command.camera->rayThrough({x: ux /. widthF, y: uy /. heightF});
-      let color = Tracer.trace(scene, ray, rayDepth);
+      let color = Tracer.trace(scene, ray, depth);
 
       Uint8ColorArray2d.set(slice.buffer, dx, dy, color);
       Uint32Array2d.set(slice.samples, dx, dy, 1);

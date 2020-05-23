@@ -3,8 +3,8 @@ let make =
     : list(RenderWorkerEvent.Command.t) => {
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
-  let passes = 10;
-  let divisions = 5;
+  let passes = settings.samples;
+  let divisions = settings.chunkDivisions;
   let width = settings.width / divisions;
   let height = settings.height / divisions;
 
@@ -13,6 +13,10 @@ let make =
       for (divX in divisions - 1 downto 0) {
         let command: RenderWorkerEvent.Command.t =
           Render({
+            config: {
+              blur: settings.blur,
+              depth: settings.depth,
+            },
             camera,
             viewport: {
               width: settings.width,
