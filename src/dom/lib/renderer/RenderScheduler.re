@@ -1,24 +1,24 @@
 // TODO: work id
 type t = {
-  workQueue: ref(list(RenderWorkerEvent.Command.t)),
-  free: ref(list(Worker.t)),
+  workQueue: Queue.t(RenderWorkerEvent.Command.t),
   workers: ref(list(Worker.t)),
+  freeWorkers: Queue.t(Worker.t),
 };
+
+type config = {workerCount: int};
 
 let log = (message: string) => {
   Js.log({j|scheduler: $message|j});
 };
 
-let rec schedule = (t: t): unit => {
-  switch (t.workQueue^, t.free^) {
-  | ([command, ...remainingCommands], [worker, ...remainingWorkers]) =>
-    Worker.send(worker, command);
-    t.workQueue := remainingCommands;
-    t.free := remainingWorkers;
+let rec schedule = (t: t): unit =>
+  if (!Queue.is_empty(t.workQueue) && !Queue.is_empty(t.freeWorkers)) {
+    let item = Queue.take(t.workQueue);
+    let worker = Queue.take(t.freeWorkers);
+
+    Worker.send(worker, item);
     schedule(t);
-  | (_, _) => ()
   };
-};
 
 let _processWorkerResult =
     (
@@ -31,27 +31,27 @@ let _processWorkerResult =
   switch (event) {
   | Rendering(slice) => sink(slice)
   | Pull =>
-    t.free := [worker, ...t.free^];
+    Queue.push(worker, t.freeWorkers);
     schedule(t);
   };
 };
 
 // TODO: become ref(t) or object type?
 let make = (sink: RenderSlice.t => unit): t => {
-  let workQueue: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
+  let workQueue: Queue.t(RenderWorkerEvent.Command.t) = Queue.create();
   let workers: ref(list(Worker.t)) = ref([]);
-  let free: ref(list(Worker.t)) = ref([]);
-  let t = {workQueue, workers, free};
+  let freeWorkers: Queue.t(Worker.t) = Queue.create();
+  let t = {workQueue, workers, freeWorkers};
 
-  let workerCount = 10;
+  let workerCount = 2;
 
   for (i in 0 to workerCount - 1) {
     let worker =
       Worker.create(
         ~scriptUri="worker.js?id=" ++ string_of_int(Random.int(10000)),
       );
-    Worker.send(worker, RenderWorkerEvent.Command.Init(i));
     Worker.receive(worker, _processWorkerResult(t, worker, sink));
+    Worker.send(worker, RenderWorkerEvent.Command.Init(i));
     workers := [worker, ...workers^];
   };
 
@@ -68,14 +68,22 @@ let rec _dispatch =
   };
 };
 
+let rec _addAllCommands = (t: t, commands: list(RenderWorkerEvent.Command.t)) => {
+  switch (commands) {
+  | [head, ...tail] =>
+    Queue.push(head, t.workQueue);
+    _addAllCommands(t, tail);
+  | [] => ()
+  };
+};
+
 let clearAndDispatchAll = (t: t, command: RenderWorkerEvent.Command.t) => {
-  t.workQueue := [];
+  Queue.clear(t.workQueue);
   _dispatch(t.workers^, command);
 };
 
 let map = (t: t, commands: list(RenderWorkerEvent.Command.t)) => {
   clearAndDispatchAll(t, RenderWorkerEvent.Command.Cancel);
-  t.workQueue := commands;
-
+  _addAllCommands(t, commands);
   schedule(t);
 };

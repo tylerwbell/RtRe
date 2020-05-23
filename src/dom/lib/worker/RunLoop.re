@@ -5,8 +5,9 @@ type t = {
 };
 
 let _postAsync = (t: t, item: t => unit): unit => {
-  let _ = Dom.setTimeout(0, () => {item(t)});
-  ();
+  //   let _ = Dom.setTimeout(0, () => {item(t)});
+  //   ();
+  item(t);
 };
 
 let rec _loop = (t: t): unit =>

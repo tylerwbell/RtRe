@@ -3,14 +3,14 @@ let make =
     : list(RenderWorkerEvent.Command.t) => {
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
-  let passes = 0;
+  let passes = 10;
   let divisions = 5;
   let width = settings.width / divisions;
   let height = settings.height / divisions;
 
   for (_ in 0 to passes) {
-    for (divX in 0 to divisions - 1) {
-      for (divY in 0 to divisions - 1) {
+    for (divY in divisions - 1 downto 0) {
+      for (divX in divisions - 1 downto 0) {
         let command: RenderWorkerEvent.Command.t =
           Render({
             camera,
