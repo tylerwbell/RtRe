@@ -1,22 +1,24 @@
 open Collections;
+open DomCollections;
 open Vec3f;
 
 type t = {
   frame: Rect.t(int),
   buffer: Array2d.t(Color.t),
-  samples: Array2d.t(int),
+  samples: Uint8ClampedArray2d.t,
 };
 
 let make = (frame: Rect.t(int), clearColor: Color.t): t => {
   let buffer = Array2d.make(frame.size.width, frame.size.height, clearColor);
-  let samples = Array2d.make(frame.size.width, frame.size.height, 0);
+  let samples =
+    Uint8ClampedArray2d.make(frame.size.width, frame.size.height, 0);
 
   {frame, buffer, samples};
 };
 
 let clear = (t: t, clearColor: Color.t) => {
   Array2d.fill(t.buffer, clearColor);
-  Array2d.fill(t.samples, 0);
+  Uint8ClampedArray2d.fill(t.samples, 0);
 };
 
 // Blend two slices. Source frame should be inside or equal to destination's frame.
@@ -30,9 +32,10 @@ let blend = (dest: t, source: t) => {
 
       let destColor = Array2d.get(dest.buffer, destX, destY);
       let sourceColor = Array2d.get(source.buffer, sourceX, sourceY);
-      let destSamples = float(Array2d.get(dest.samples, destX, destY));
+      let destSamples =
+        float(Uint8ClampedArray2d.get(dest.samples, destX, destY));
       let sourceSamples =
-        float(Array2d.get(source.samples, sourceX, sourceY));
+        float(Uint8ClampedArray2d.get(source.samples, sourceX, sourceY));
 
       let color =
         sourceColor
@@ -41,7 +44,7 @@ let blend = (dest: t, source: t) => {
         ->divScalar(destSamples +. sourceSamples);
 
       Array2d.set(dest.buffer, destX, destY, color);
-      Array2d.set(
+      Uint8ClampedArray2d.set(
         dest.samples,
         destX,
         destY,

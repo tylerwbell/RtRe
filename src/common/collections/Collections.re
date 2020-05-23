@@ -18,4 +18,4 @@ module RandomAccessArray = {
   };
 };
 
-module Array2d = RandomAccessCollection2dView.Make(RandomAccessArray);
+module Array2d = RandomAccessCollection2dView.MakeGeneric(RandomAccessArray);

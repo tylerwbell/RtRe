@@ -1,4 +1,4 @@
-module type RandomAccessCollection = {
+module type RandomAccessGenericCollection = {
   type t('a);
 
   let make: (int, 'a) => t('a);

@@ -7,7 +7,7 @@ module RandomAccessCollection = {
   let get: (t, int) => int = [%bs.raw
     {|
     function (t, i) {
-        return t.data[i];
+        return t[i];
     }
     |}
   ];
@@ -16,7 +16,7 @@ module RandomAccessCollection = {
   let set: (t, int, int) => unit = [%bs.raw
     {|
     function (t, i, value) {
-        t.data[i] = value;
+        t[i] = value;
     }
     |}
   ];
@@ -31,7 +31,7 @@ module RandomAccessCollection = {
     let create: int => t = [%bs.raw
       {|
     function(size) {
-        return new UIntClampedArray(size);
+        return new Uint8ClampedArray(size);
     }
     |}
     ];
