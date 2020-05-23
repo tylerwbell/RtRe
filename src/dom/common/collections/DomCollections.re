@@ -4,6 +4,4 @@ module Uint8ClampedArray2d =
   );
 
 module Uint32Array2d =
-  RandomAccessCollection2dView.MakeInt(
-    Uint8ClampedArray.RandomAccessCollection,
-  );
+  RandomAccessCollection2dView.MakeInt(Uint32Array.RandomAccessCollection);

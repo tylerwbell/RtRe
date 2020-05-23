@@ -190,7 +190,19 @@ eval("\n\nvar Color$Rt = __webpack_require__(/*! ../../../common/color/Color.bs.
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar Uint8ClampedArray$Rt = __webpack_require__(/*! ./Uint8ClampedArray.bs.js */ \"./lib/js/src/dom/common/collections/Uint8ClampedArray.bs.js\");\nvar RandomAccessCollection2dView$Rt = __webpack_require__(/*! ../../../common/collections/RandomAccessCollection2dView.bs.js */ \"./lib/js/src/common/collections/RandomAccessCollection2dView.bs.js\");\n\nvar Uint8ClampedArray2d = RandomAccessCollection2dView$Rt.MakeInt({\n      make: Uint8ClampedArray$Rt.RandomAccessCollection.make,\n      get: Uint8ClampedArray$Rt.RandomAccessCollection.get,\n      set: Uint8ClampedArray$Rt.RandomAccessCollection.set,\n      fill: Uint8ClampedArray$Rt.RandomAccessCollection.fill\n    });\n\nvar Uint32Array2d = RandomAccessCollection2dView$Rt.MakeInt({\n      make: Uint8ClampedArray$Rt.RandomAccessCollection.make,\n      get: Uint8ClampedArray$Rt.RandomAccessCollection.get,\n      set: Uint8ClampedArray$Rt.RandomAccessCollection.set,\n      fill: Uint8ClampedArray$Rt.RandomAccessCollection.fill\n    });\n\nexports.Uint8ClampedArray2d = Uint8ClampedArray2d;\nexports.Uint32Array2d = Uint32Array2d;\n/* Uint8ClampedArray2d Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/collections/DomCollections.bs.js?");
+eval("\n\nvar Uint32Array$Rt = __webpack_require__(/*! ./Uint32Array.bs.js */ \"./lib/js/src/dom/common/collections/Uint32Array.bs.js\");\nvar Uint8ClampedArray$Rt = __webpack_require__(/*! ./Uint8ClampedArray.bs.js */ \"./lib/js/src/dom/common/collections/Uint8ClampedArray.bs.js\");\nvar RandomAccessCollection2dView$Rt = __webpack_require__(/*! ../../../common/collections/RandomAccessCollection2dView.bs.js */ \"./lib/js/src/common/collections/RandomAccessCollection2dView.bs.js\");\n\nvar Uint8ClampedArray2d = RandomAccessCollection2dView$Rt.MakeInt({\n      make: Uint8ClampedArray$Rt.RandomAccessCollection.make,\n      get: Uint8ClampedArray$Rt.RandomAccessCollection.get,\n      set: Uint8ClampedArray$Rt.RandomAccessCollection.set,\n      fill: Uint8ClampedArray$Rt.RandomAccessCollection.fill\n    });\n\nvar Uint32Array2d = RandomAccessCollection2dView$Rt.MakeInt({\n      make: Uint32Array$Rt.RandomAccessCollection.make,\n      get: Uint32Array$Rt.RandomAccessCollection.get,\n      set: Uint32Array$Rt.RandomAccessCollection.set,\n      fill: Uint32Array$Rt.RandomAccessCollection.fill\n    });\n\nexports.Uint8ClampedArray2d = Uint8ClampedArray2d;\nexports.Uint32Array2d = Uint32Array2d;\n/* Uint8ClampedArray2d Not a pure module */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/collections/DomCollections.bs.js?");
+
+/***/ }),
+
+/***/ "./lib/js/src/dom/common/collections/Uint32Array.bs.js":
+/*!*************************************************************!*\
+  !*** ./lib/js/src/dom/common/collections/Uint32Array.bs.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\n\nfunction get(t, index) {\n  return t[index];\n}\n\nfunction set(t, index, value) {\n  t[index] = value;\n  \n}\n\nfunction fill(t, value) {\n  t.fill(value);\n  \n}\n\nfunction make(size, defaultValue) {\n  var array = new Uint32Array(new ArrayBuffer((size << 2)));\n  array.fill(defaultValue);\n  return array;\n}\n\nvar RandomAccessCollection = {\n  get: get,\n  set: set,\n  fill: fill,\n  make: make\n};\n\nvar $$ArrayBuffer$1;\n\nvar S;\n\nexports.$$ArrayBuffer = $$ArrayBuffer$1;\nexports.S = S;\nexports.RandomAccessCollection = RandomAccessCollection;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/collections/Uint32Array.bs.js?");
 
 /***/ }),
 
@@ -202,7 +214,7 @@ eval("\n\nvar Uint8ClampedArray$Rt = __webpack_require__(/*! ./Uint8ClampedArray
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n\nvar get = (function (t, i) {\n        return t[i];\n    });\n\nvar set = (function (t, i, value) {\n        t[i] = value;\n    });\n\nfunction fill(t, value) {\n  for(var i = 0 ,i_finish = t.length; i <= i_finish; ++i){\n    set(t, i, value);\n  }\n  \n}\n\nfunction make(size, defaultValue) {\n  var create = (function(size) {\n        return new Uint8ClampedArray(size);\n    });\n  var array = create(size);\n  fill(array, defaultValue);\n  return array;\n}\n\nvar RandomAccessCollection = {\n  get: get,\n  set: set,\n  fill: fill,\n  make: make\n};\n\nexports.RandomAccessCollection = RandomAccessCollection;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/collections/Uint8ClampedArray.bs.js?");
+eval("\n\n\nfunction get(t, index) {\n  return t[index];\n}\n\nfunction set(t, index, value) {\n  t[index] = value;\n  \n}\n\nfunction fill(t, value) {\n  t.fill(value);\n  \n}\n\nfunction make(size, defaultValue) {\n  var array = new Uint8ClampedArray(new ArrayBuffer(size));\n  array.fill(defaultValue);\n  return array;\n}\n\nvar RandomAccessCollection = {\n  get: get,\n  set: set,\n  fill: fill,\n  make: make\n};\n\nvar $$ArrayBuffer$1;\n\nvar S;\n\nexports.$$ArrayBuffer = $$ArrayBuffer$1;\nexports.S = S;\nexports.RandomAccessCollection = RandomAccessCollection;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/common/collections/Uint8ClampedArray.bs.js?");
 
 /***/ }),
 

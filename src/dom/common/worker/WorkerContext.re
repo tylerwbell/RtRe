@@ -1,5 +1,7 @@
-// Send data to
-[@bs.val] external send: 'a => unit = "postMessage";
+// Send data back to the parent of this worker. Uses `bs.val` rather than `bs.send` as
+// this is a global function in the worker context, and does not pass the caller as
+// the first parameter. I don't know what I'm doing.
+[@bs.val] external send: ('a, array('b)) => unit = "postMessage";
 
 // Terminate the worker.
 let exit: unit => unit = [%bs.raw {|
