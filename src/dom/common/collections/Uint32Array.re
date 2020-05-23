@@ -10,6 +10,8 @@ let create: int => t = [%bs.raw
     |}
 ];
 
+[@bs.get] external length: t => int = "length";
+
 let get: (t, int) => int = [%bs.raw
   {|
     function (t, i) {

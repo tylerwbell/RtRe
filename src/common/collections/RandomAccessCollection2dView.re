@@ -1,6 +1,6 @@
 open RandomAccessCollection;
 
-module Make = (Source: RandomAccessCollection) => {
+module Make = (Source: RandomAccessCollection, a: type) => {
   type t('a) = {
     size: Size.t(int),
     source: Source.t('a),
