@@ -23,9 +23,9 @@ module Make = (Source: RandomAccessIntCollection) => {
   let set = (t: t, index: int, color: Color.t) => {
     let offset = 4 * index;
 
-    Source.set(t.source, offset + 0, int_of_float(color.x));
-    Source.set(t.source, offset + 1, int_of_float(color.y));
-    Source.set(t.source, offset + 2, int_of_float(color.z));
+    Source.set(t.source, offset + 0, int_of_float(255.0 *. color.x));
+    Source.set(t.source, offset + 1, int_of_float(255.0 *. color.y));
+    Source.set(t.source, offset + 2, int_of_float(255.0 *. color.z));
   };
 
   let fill = (t: t, color: Color.t) => {

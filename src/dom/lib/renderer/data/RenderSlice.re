@@ -1,22 +1,22 @@
-open Collections;
 open DomCollections;
 open Vec3f;
 
 type t = {
   frame: Rect.t(int),
-  buffer: Array2d.t(Color.t),
+  buffer: Uint8ColorArray2d.t,
   samples: Uint32Array2d.t,
 };
 
 let make = (frame: Rect.t(int), clearColor: Color.t): t => {
-  let buffer = Array2d.make(frame.size.width, frame.size.height, clearColor);
+  let buffer =
+    Uint8ColorArray2d.make(frame.size.width, frame.size.height, clearColor);
   let samples = Uint32Array2d.make(frame.size.width, frame.size.height, 0);
 
   {frame, buffer, samples};
 };
 
 let clear = (t: t, clearColor: Color.t) => {
-  Array2d.fill(t.buffer, clearColor);
+  Uint8ColorArray2d.fill(t.buffer, clearColor);
   Uint32Array2d.fill(t.samples, 0);
 };
 
@@ -29,8 +29,9 @@ let blend = (dest: t, source: t) => {
         source.frame.origin.y + sourceY,
       );
 
-      let destColor = Array2d.get(dest.buffer, destX, destY);
-      let sourceColor = Array2d.get(source.buffer, sourceX, sourceY);
+      let destColor = Uint8ColorArray2d.get(dest.buffer, destX, destY);
+      let sourceColor =
+        Uint8ColorArray2d.get(source.buffer, sourceX, sourceY);
       let destSamples = float(Uint32Array2d.get(dest.samples, destX, destY));
       let sourceSamples =
         float(Uint32Array2d.get(source.samples, sourceX, sourceY));
@@ -41,7 +42,7 @@ let blend = (dest: t, source: t) => {
         ->add(destColor->multScalar(destSamples))
         ->divScalar(destSamples +. sourceSamples);
 
-      Array2d.set(dest.buffer, destX, destY, color);
+      Uint8ColorArray2d.set(dest.buffer, destX, destY, color);
       Uint32Array2d.set(
         dest.samples,
         destX,

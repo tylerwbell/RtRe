@@ -1,6 +1,5 @@
 open Camera;
 open Rect;
-open Collections;
 open DomCollections;
 
 // Init
@@ -43,7 +42,7 @@ let render =
         command.camera->rayThrough({x: ux /. widthF, y: uy /. heightF});
       let color = Tracer.trace(scene, ray, rayDepth);
 
-      Array2d.set(slice.buffer, dx, dy, color);
+      Uint8ColorArray2d.set(slice.buffer, dx, dy, color);
       Uint32Array2d.set(slice.samples, dx, dy, 1);
     };
   };
@@ -57,10 +56,14 @@ let execute = (_: RunLoop.t, command: RenderWorkerEvent.Command.t) => {
   | (Render(command), Some(scene)) =>
     let slice = render(scene, command);
     let result: RenderWorkerEvent.Output.t = Rendering(slice);
-    let buffer =
+    let colorsBuffer =
+      Uint8ClampedArray.RandomAccessCollection.buffer(
+        slice.buffer.source.source,
+      );
+    let samplesBuffer =
       Uint32Array.RandomAccessCollection.buffer(slice.samples.source);
 
-    WorkerContext.send(result, [|buffer|]);
+    WorkerContext.send(result, [|colorsBuffer, samplesBuffer|]);
   | (SetScene(t), _) => scene := Some(t)
   | (Cancel, _) =>
     failwith(
