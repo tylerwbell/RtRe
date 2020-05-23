@@ -5,6 +5,10 @@ module RandomAccessArray = {
     Array.make(size, defaultValue);
   };
 
+  let length = (t: t('a)): int => {
+    Array.length(t);
+  };
+
   let get = (t: t('a), index: int): 'a => {
     t[index];
   };
@@ -18,4 +22,4 @@ module RandomAccessArray = {
   };
 };
 
-module Array2d = RandomAccessCollection2dView.MakeGeneric(RandomAccessArray);
+module Array2d = Collection2dView.MakeGeneric(RandomAccessArray);
