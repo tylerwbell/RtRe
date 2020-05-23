@@ -27,13 +27,19 @@ let make = (canvas: Canvas.t, width: int, height: int): t => {
 };
 
 let draw = (t: t) => {
-  for (x in 0 to t.rendering.frame.size.width - 1) {
-    for (y in 0 to t.rendering.frame.size.height - 1) {
-      let color = Uint8ColorArray2d.get(t.rendering.buffer, x, y);
-      // TODO: this should be a processing step
-      let correctedColor = Filter.apply(GammaFilter, color);
-      t.context->setFillStyle(Color.toDomRgbaString(correctedColor));
-      t.context->fillRect(x, y, 1, 1);
-    };
-  };
+  let buffer =
+    Uint8ClampedArray.RandomAccessCollection.buffer(
+      t.rendering.buffer.source.source,
+    );
+
+  let uint8Array = Js.Typed_array.Uint8ClampedArray.fromBuffer(buffer);
+
+  t.context
+  ->drawImageData(
+      uint8Array,
+      t.rendering.frame.size.width,
+      t.rendering.frame.size.height,
+      0,
+      0,
+    );
 };

@@ -94,10 +94,10 @@ module MakeColor = (Source: RandomAccessColorCollection) => {
   };
 
   let get = (t: t, x: int, y: int): Color.t => {
-    Source.get(t.source, y + x * t.size.width);
+    Source.get(t.source, x + y * t.size.height);
   };
 
   let set = (t: t, x: int, y: int, value: Color.t) => {
-    Source.set(t.source, y + x * t.size.width, value);
+    Source.set(t.source, x + y * t.size.height, value);
   };
 };

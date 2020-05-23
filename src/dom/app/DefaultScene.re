@@ -14,14 +14,15 @@ let sky: Texture.t =
 
 let make = (): Scene.t => {
   let bodies: ref(list(Shape.t)) = ref([]);
-  for (_ in 0 to 10) {
-    let a = Random.int(10) - 5;
-    let b = Random.int(10) - 5;
+  for (_ in 0 to 200) {
+    let a = Random.float(20.0) -. 10.0;
+    let b = Random.float(20.0) -. 10.0;
+    let y = 0.2;
     let m = Random.float(1.0);
     let center: Vec3f.t = {
-      x: float(a) +. 0.9 *. Random.float(1.0),
-      y: 0.2,
-      z: float(b) +. 0.9 *. Random.float(1.0),
+      x: a +. 0.9 *. Random.float(1.0),
+      y,
+      z: b +. 0.9 *. Random.float(1.0),
     };
 
     let material: Material.t =

@@ -13,15 +13,15 @@ let camera: ref(Camera.t) =
   ref({
     position: {
       x: 1.0,
-      y: 3.0,
-      z: 5.0,
+      y: 5.0,
+      z: 10.0,
     },
     direction: {
       x: 0.0,
       y: (-1.0),
       z: (-1.0),
     },
-    fov: 120.,
+    fov: 100.0,
     aspect: 1.0,
   });
 
@@ -30,7 +30,7 @@ let renderer = ref(Renderer.make(canvas));
 renderer := Renderer.setScene(renderer^, scene);
 
 // TODO: keyboard controller
-let d = 5.0;
+let d = 1.0;
 Dom.addKeyDownEventListener(keycode => {
   switch (keycode) {
   | 87 =>
@@ -68,7 +68,7 @@ Dom.addMouseMoveEventListener((x, y) => {
     camera :=
       Camera.tilt(
         camera^,
-        {x: 0.001 *. float(dx), y: (-0.001) *. float(dy)},
+        {x: 0.003 *. float(dx), y: (-0.003) *. float(dy)},
       );
     renderer := Renderer.setCamera(renderer^, camera^);
   };

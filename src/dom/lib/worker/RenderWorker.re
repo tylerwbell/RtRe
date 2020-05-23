@@ -24,7 +24,7 @@ let render =
   let viewport = command.viewport;
   let frame = command.frame;
   let blur = 1.0; // TODO: from command
-  let rayDepth = 5; // TODO: from command
+  let rayDepth = 10; // TODO: from command
 
   // result slice
   let slice = RenderSlice.make(command.frame, Color.black);

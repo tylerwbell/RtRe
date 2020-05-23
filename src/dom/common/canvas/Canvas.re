@@ -4,8 +4,8 @@ type context2d;
 let create: unit => t = [%bs.raw
   {|function() {
   var node = document.createElement('canvas')
-  node.style.width = '500px';
-  node.style.height = '500px';
+  node.style.width = '100%';
+  node.style.height = '100%';
   return node
 }|}
 ];
@@ -29,6 +29,17 @@ module Context2d = {
 
   [@bs.send]
   external fillRect: (context2d, int, int, int, int) => unit = "fillRect";
+
+  // TODO: break out the image data steps and types.
+  let drawImageData:
+    (context2d, Js.Typed_array.Uint8ClampedArray.t, int, int, int, int) => unit = [%bs.raw
+    {|
+    function(context, buffer, width, height, x, y) {
+      let imageData = new ImageData(buffer, width, height);
+      context.putImageData(imageData, x, y);
+    }
+  |}
+  ];
 
   let drawPoint = (context: context2d, color: Color.t, x: int, y: int) => {
     context->setFillStyle(Color.toDomRgbaString(color));

@@ -43,7 +43,7 @@ let make = (sink: RenderSlice.t => unit): t => {
   let freeWorkers: Queue.t(Worker.t) = Queue.create();
   let t = {workQueue, workers, freeWorkers};
 
-  let workerCount = 2;
+  let workerCount = 8;
 
   for (i in 0 to workerCount - 1) {
     let worker =
