@@ -4,7 +4,7 @@ let make =
   let commands: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
 
   let passes = 0;
-  let divisions = 10;
+  let divisions = 5;
   let width = settings.width / divisions;
   let height = settings.height / divisions;
 

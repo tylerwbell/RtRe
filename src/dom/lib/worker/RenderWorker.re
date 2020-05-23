@@ -4,7 +4,10 @@ open Rect;
 // Init
 WorkerContext.trapOnWindow();
 Random.init(int_of_float(Js.Date.now()));
-let id = ref(0);
+
+// State
+let id: ref(int) = ref(0);
+let scene: ref(option(Scene.t)) = ref(None);
 
 // Util
 let log = (message: string) => {
@@ -20,7 +23,7 @@ let render =
   let viewport = command.viewport;
   let frame = command.frame;
   let blur = 1.0; // TODO: from command
-  let rayDepth = 5; // TODO: from command
+  let rayDepth = 20; // TODO: from command
 
   // result slice
   let slice = RenderSlice.make(command.frame, Color.black);
@@ -45,46 +48,30 @@ let render =
   slice;
 };
 
-let scene: ref(option(Scene.t)) = ref(None);
-let commandQueue: ref(list(RenderWorkerEvent.Command.t)) = ref([]);
-
-let processCommand = (command: RenderWorkerEvent.Command.t) => {
-  log("command");
+let execute = (looper: RunLoop.t, command: RenderWorkerEvent.Command.t) => {
   switch (command, scene^) {
-  | (Init(_), _) => ()
+  | (Init(id'), _) => id := id'
   | (Render(command), Some(scene)) =>
     let slice = render(scene, command);
     let result: RenderWorkerEvent.Output.t = Rendering(slice);
     WorkerContext.send(result);
   | (SetScene(t), _) => scene := Some(t)
-  | (Cancel, _) => ()
-  | (Render(_), None) => ()
+  | (Cancel, _) => RunLoop.clear(looper)
+  | (Render(_), None) => failwith("invalid state")
   };
 };
 
-let rec runLoop = () => {
-  switch (commandQueue^) {
-  | [command, ...rest] =>
-    commandQueue := rest;
-    processCommand(command);
-    let _ = Dom.setTimeout(0, runLoop);
-    ();
-  | [] => WorkerContext.send(RenderWorkerEvent.Output.Pull)
-  };
-};
+let looper =
+  RunLoop.make(_ => {
+    // Request more work when we are out.
+    WorkerContext.send(
+      RenderWorkerEvent.Output.Pull,
+    )
+  });
 
 WorkerContext.receive(event => {
   let command: RenderWorkerEvent.Command.t = WorkerEvent.decode(event);
-  switch (command) {
-  | Init(id') => id := id'
-  | SetScene(_) => processCommand(command)
-  | Render(_) => commandQueue := [command]
-  | Cancel => commandQueue := []
-  };
-
-  // Debounce
-  let _ = Dom.setTimeout(0, runLoop);
-  ();
+  RunLoop.dispatch(looper, loop => {execute(loop, command)});
 });
 
 // Startup.
