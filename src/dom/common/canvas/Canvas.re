@@ -14,6 +14,8 @@ let create: unit => t = [%bs.raw
 [@bs.set] external setWidth: (t, float) => unit = "width";
 [@bs.get] external height: t => float = "height";
 [@bs.set] external setHeight: (t, float) => unit = "height";
+[@bs.send]
+external transferControlToOffscreen: t => unit = "transferControlToOffscreen";
 
 [@bs.send]
 external getContext2d: (t, [@bs.as "2d"] _) => context2d = "getContext";
