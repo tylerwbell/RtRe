@@ -10,12 +10,12 @@ type t = {
 
 let default = (): t => {
   {
-    width: 300,
-    height: 300,
+    width: 1000,
+    height: 1000,
     samples: 40,
     blur: 0.0,
-    depth: 10,
-    chunkDivisions: 10,
-    workers: 4,
+    depth: 20,
+    chunkDivisions: 20,
+    workers: 6,
   };
 };

@@ -1,5 +1,3 @@
-# RtML
+# RtRe
 
-TODO: `ML` suffix stinks. Use `Re` or `Reason`. `RtRe` maybe.
-
-A Ray Tracer in ReasonML. Why not. Check it out here *TODO* or `npm run start`.
+A Ray Tracer in ReasonML. Why not. [Check it out here](https://tylerwbell.github.io/RtRe/dist/index.html) or `npm run start`.

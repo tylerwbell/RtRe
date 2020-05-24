@@ -178,7 +178,7 @@ eval("\n\nvar Dom$Rt = __webpack_require__(/*! ../common/dom/Dom.bs.js */ \"./li
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n\nfunction $$default(param) {\n  return {\n          width: 300,\n          height: 300,\n          samples: 40,\n          blur: 0.0,\n          depth: 10,\n          chunkDivisions: 10,\n          workers: 4\n        };\n}\n\nexports.$$default = $$default;\nexports.default = $$default;\nexports.__esModule = true;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/app/RenderSettings.bs.js?");
+eval("\n\n\nfunction $$default(param) {\n  return {\n          width: 1000,\n          height: 1000,\n          samples: 40,\n          blur: 0.0,\n          depth: 20,\n          chunkDivisions: 20,\n          workers: 6\n        };\n}\n\nexports.$$default = $$default;\nexports.default = $$default;\nexports.__esModule = true;\n/* No side effect */\n\n\n//# sourceURL=webpack:///./lib/js/src/dom/app/RenderSettings.bs.js?");
 
 /***/ }),
 
